@@ -1,0 +1,54 @@
+[
+  {
+    "timestamp": "2026-05-06T02:53:20.289600",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "user@city.gov"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:04:10.564672",
+    "action": "USER_SIGNUP",
+    "details": {
+      "email": "khushi@2006",
+      "username": "khushi"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:04:37.851327",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "khushi@2006"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:18:23.492435",
+    "action": "USER_SIGNUP",
+    "details": {
+      "email": "ananya@gmail.com",
+      "username": "Ananya"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:18:28.404780",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "ananya@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:20:38.662553",
+    "action": "USER_SIGNUP",
+    "details": {
+      "email": "nagveni@gmail.com",
+      "username": "nagveni"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:20:43.278156",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "nagveni@gmail.com"
+    }
+  }
+]

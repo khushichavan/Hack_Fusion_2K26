@@ -1,0 +1,614 @@
+{
+  "users": [
+    {
+      "id": "u-admin",
+      "name": "City Admin",
+      "email": "admin@city.gov",
+      "phone": "+1 555 0001",
+      "location": "City HQ",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "u-demo",
+      "name": "Maya Citizen",
+      "email": "user@city.gov",
+      "phone": "+1 555 0100",
+      "location": "Sector 12",
+      "password": "user123",
+      "role": "user"
+    },
+    {
+      "id": "7o1s38e5",
+      "name": "khushic",
+      "email": "khushi@gmail.com",
+      "phone": "1234567894",
+      "location": "hubli",
+      "password": "khushiv",
+      "role": "user",
+      "savedLocation": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216326293473857,
+        "lng": 75.14170897027458
+      }
+    },
+    {
+      "id": "18t5by08",
+      "name": "yasmin",
+      "email": "yasmin@gmail.com",
+      "phone": "4564564561",
+      "location": "varur",
+      "password": "yasmin",
+      "role": "admin"
+    },
+    {
+      "id": "6opopc2r",
+      "name": "khushi",
+      "email": "khushi@2006",
+      "phone": "1234567894",
+      "location": "varur",
+      "password": "",
+      "role": "user",
+      "savedLocation": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216334532213923,
+        "lng": 75.14171463983101
+      }
+    },
+    {
+      "id": "6wpun5fq",
+      "name": "Ananya",
+      "email": "ananya@gmail.com",
+      "phone": "4567891230",
+      "location": "arlikatti",
+      "password": "",
+      "role": "user",
+      "savedLocation": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216529615746554,
+        "lng": 75.14171253290503
+      }
+    },
+    {
+      "id": "xxwuhr0j",
+      "name": "nagveni",
+      "email": "nagveni@gmail.com",
+      "phone": "7894563210",
+      "location": "hubli",
+      "password": "",
+      "role": "admin"
+    }
+  ],
+  "totalSupply": 900,
+  "defaultTtlMin": 30,
+  "areas": [
+    {
+      "id": "a1",
+      "name": "City General Hospital",
+      "category": "Hospital",
+      "demand": 350,
+      "priority": "high",
+      "allocated": 350,
+      "status": "Full",
+      "justification": "Full allocation granted (priority: high)."
+    },
+    {
+      "id": "a2",
+      "name": "Sector 12 Residential",
+      "category": "Residential",
+      "demand": 320,
+      "priority": "medium",
+      "allocated": 320,
+      "status": "Full",
+      "justification": "Full allocation granted (priority: medium)."
+    },
+    {
+      "id": "a3",
+      "name": "Riverside Heights",
+      "category": "Residential",
+      "demand": 480,
+      "priority": "medium",
+      "allocated": 20,
+      "status": "Partial",
+      "justification": "Partial allocation: 20/480 ML. Higher-priority demand was served first."
+    },
+    {
+      "id": "a4",
+      "name": "Industrial Park",
+      "category": "Industry",
+      "demand": 600,
+      "priority": "low",
+      "allocated": 0,
+      "status": "No Supply",
+      "justification": "No allocation: total supply was exhausted by higher-priority areas."
+    },
+    {
+      "id": "a5",
+      "name": "Old Town Clinic",
+      "category": "Hospital",
+      "demand": 180,
+      "priority": "high",
+      "allocated": 180,
+      "status": "Full",
+      "justification": "Full allocation granted (priority: high)."
+    },
+    {
+      "id": "hkhhsn3i",
+      "name": "household",
+      "category": "Residential",
+      "demand": 30,
+      "priority": "high",
+      "allocated": 30,
+      "status": "Full",
+      "justification": "Full allocation granted (priority: high)."
+    }
+  ],
+  "requests": [
+    {
+      "id": "5bi0cvhq",
+      "userEmail": "ananya@gmail.com",
+      "userName": "Ananya",
+      "userPhone": "4567891230",
+      "location": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216529615746554,
+        "lng": 75.14171253290503
+      },
+      "coordinates": {
+        "lat": 15.216529615746554,
+        "lng": 75.14171253290503
+      },
+      "amount": 30,
+      "purpose": "Household Use",
+      "priority": "high",
+      "description": "no water in home",
+      "createdAt": 1778017754693,
+      "submittedAt": 1778017754693,
+      "ttlMs": 1800000,
+      "status": "Completed",
+      "score": 12,
+      "scoreLabel": "High"
+    },
+    {
+      "id": "6xlddwm8",
+      "userEmail": "khushi@2006",
+      "userName": "khushi",
+      "userPhone": "1234567894",
+      "location": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216334532213923,
+        "lng": 75.14171463983101
+      },
+      "coordinates": {
+        "lat": 15.216334532213923,
+        "lng": 75.14171463983101
+      },
+      "amount": 30,
+      "purpose": "Drinking Water",
+      "priority": "high",
+      "description": "",
+      "createdAt": 1778016915421,
+      "submittedAt": 1778016915421,
+      "ttlMs": 1800000,
+      "status": "Completed",
+      "score": 13,
+      "scoreLabel": "High"
+    },
+    {
+      "id": "ahsugep6",
+      "userEmail": "khushi@gmail.com",
+      "userName": "khushic",
+      "userPhone": "1234567894",
+      "location": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.216326293473857,
+        "lng": 75.14170897027458
+      },
+      "coordinates": {
+        "lat": 15.216326293473857,
+        "lng": 75.14170897027458
+      },
+      "amount": 30,
+      "purpose": "Hospital/Emergency",
+      "priority": "medium",
+      "description": "i want water for yasmins marriage",
+      "createdAt": 1778015292174,
+      "submittedAt": 1778015292174,
+      "ttlMs": 1800000,
+      "status": "Completed",
+      "score": 12.5,
+      "scoreLabel": "High"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "sb76dm4y",
+      "title": "Request completed",
+      "body": "Your 30 ML request for My current location was completed.",
+      "createdAt": 1778017991953,
+      "read": false,
+      "forEmail": "khushi@2006"
+    },
+    {
+      "id": "4m6emema",
+      "title": "Request completed",
+      "body": "Your 30 ML request for My current location was completed.",
+      "createdAt": 1778017988634,
+      "read": false,
+      "forEmail": "ananya@gmail.com"
+    },
+    {
+      "id": "ru7ieshj",
+      "title": "Request approved",
+      "body": "Your 30 ML request for My current location was approved.",
+      "createdAt": 1778017970781,
+      "read": false,
+      "forEmail": "khushi@2006"
+    },
+    {
+      "id": "q40p0r6n",
+      "title": "Request rejected",
+      "body": "Your 30 ML request for My current location was rejected.",
+      "createdAt": 1778017966717,
+      "read": false,
+      "forEmail": "ananya@gmail.com"
+    },
+    {
+      "id": "lqivcwb8",
+      "title": "Welcome back",
+      "body": "Signed in as admin.",
+      "createdAt": 1778017843282,
+      "read": false,
+      "forEmail": "nagveni@gmail.com"
+    },
+    {
+      "id": "rfs83ood",
+      "title": "Water request submitted",
+      "body": "Your 30 ML request for My current location is pending with location.",
+      "createdAt": 1778017754693,
+      "read": false,
+      "forEmail": "ananya@gmail.com"
+    },
+    {
+      "id": "ezx66iul",
+      "title": "Welcome back",
+      "body": "Signed in as user.",
+      "createdAt": 1778017708409,
+      "read": false,
+      "forEmail": "ananya@gmail.com"
+    },
+    {
+      "id": "uw0ear96",
+      "title": "Water request submitted",
+      "body": "Your 30 ML request for My current location is pending with location.",
+      "createdAt": 1778016915422,
+      "read": false,
+      "forEmail": "khushi@2006"
+    },
+    {
+      "id": "u6rrzuxa",
+      "title": "Welcome back",
+      "body": "Signed in as user.",
+      "createdAt": 1778016877854,
+      "read": false,
+      "forEmail": "khushi@2006"
+    },
+    {
+      "id": "ontbhxue",
+      "title": "Request completed",
+      "body": "Your 30 ML request for My current location was completed.",
+      "createdAt": 1778015642772,
+      "read": false,
+      "forEmail": "khushi@gmail.com"
+    },
+    {
+      "id": "1v05y32u",
+      "title": "Request approved",
+      "body": "Your 30 ML request for My current location was approved.",
+      "createdAt": 1778015639574,
+      "read": false,
+      "forEmail": "khushi@gmail.com"
+    },
+    {
+      "id": "lo90uezw",
+      "title": "Welcome back",
+      "body": "Signed in as admin.",
+      "createdAt": 1778015489411,
+      "read": false,
+      "forEmail": "yasmin@gmail.com"
+    },
+    {
+      "id": "ma8j8qnv",
+      "title": "Water request submitted",
+      "body": "Your 30 ML request for My current location is pending with location.",
+      "createdAt": 1778015292175,
+      "read": false,
+      "forEmail": "khushi@gmail.com"
+    },
+    {
+      "id": "yr8v8wx5",
+      "title": "Welcome back",
+      "body": "Signed in as user.",
+      "createdAt": 1778015166706,
+      "read": false,
+      "forEmail": "khushi@gmail.com"
+    },
+    {
+      "id": "n1",
+      "title": "Welcome to AquaFlow",
+      "body": "Your dashboard is ready.",
+      "createdAt": 1778013323200,
+      "read": false
+    }
+  ],
+  "logs": [
+    {
+      "id": "1bbx1vqr",
+      "ts": 1778017996882,
+      "actor": "Admin",
+      "action": "Combined supply plan created for My current location"
+    },
+    {
+      "id": "ugr5weso",
+      "ts": 1778017991952,
+      "actor": "Admin",
+      "action": "Completed request from khushi (30 ML, My current location)"
+    },
+    {
+      "id": "k5m8xdum",
+      "ts": 1778017988633,
+      "actor": "Admin",
+      "action": "Completed request from Ananya (30 ML, My current location)"
+    },
+    {
+      "id": "q6lonzzc",
+      "ts": 1778017977804,
+      "actor": "Admin",
+      "action": "Viewed request on map for khushi (30 ML)"
+    },
+    {
+      "id": "8amd5jw5",
+      "ts": 1778017970781,
+      "actor": "Admin",
+      "action": "Approved request from khushi (30 ML, My current location)"
+    },
+    {
+      "id": "q29jg4fw",
+      "ts": 1778017966716,
+      "actor": "Admin",
+      "action": "Rejected request from Ananya (30 ML, My current location)"
+    },
+    {
+      "id": "u793tuuj",
+      "ts": 1778017956152,
+      "actor": "Admin",
+      "action": "Viewed request on map for Ananya (30 ML)"
+    },
+    {
+      "id": "vx48qily",
+      "ts": 1778017935902,
+      "actor": "Admin",
+      "action": "Resolved allocation conflict by priority"
+    },
+    {
+      "id": "ukjlfvnc",
+      "ts": 1778017935902,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "9s3g54hf",
+      "ts": 1778017931005,
+      "actor": "Admin",
+      "action": "Resolved allocation conflict by priority"
+    },
+    {
+      "id": "73l7bp2i",
+      "ts": 1778017931005,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "ynt3wj1v",
+      "ts": 1778017914047,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "oxg8hb5p",
+      "ts": 1778017914047,
+      "actor": "Admin",
+      "action": "Added area household"
+    },
+    {
+      "id": "98uu84r1",
+      "ts": 1778017869687,
+      "actor": "Admin",
+      "action": "Set request time limit to 30 min"
+    },
+    {
+      "id": "is17hdeb",
+      "ts": 1778017864432,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "nwb5onkm",
+      "ts": 1778017864432,
+      "actor": "Admin",
+      "action": "Reduced supply by 200 ML (now 900)"
+    },
+    {
+      "id": "mr9ti1e2",
+      "ts": 1778017861766,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "ia0xm9b2",
+      "ts": 1778017861766,
+      "actor": "Admin",
+      "action": "Reduced supply by 200 ML (now 1100)"
+    },
+    {
+      "id": "537x4685",
+      "ts": 1778017858692,
+      "actor": "Admin",
+      "action": "Recalculated allocation"
+    },
+    {
+      "id": "kdr6udct",
+      "ts": 1778017858692,
+      "actor": "Admin",
+      "action": "Reduced supply by 200 ML (now 1300)"
+    },
+    {
+      "id": "l5xtycwc",
+      "ts": 1778017843282,
+      "actor": "nagveni",
+      "action": "Logged in"
+    },
+    {
+      "id": "sukeacwv",
+      "ts": 1778017838668,
+      "actor": "nagveni",
+      "action": "Account created"
+    },
+    {
+      "id": "sziu91j1",
+      "ts": 1778017754693,
+      "actor": "Ananya",
+      "action": "Submitted water request for 30 ML at My current location"
+    },
+    {
+      "id": "kevg62qz",
+      "ts": 1778017722570,
+      "actor": "User",
+      "action": "Saved location My current location, Live GPS, Device location"
+    },
+    {
+      "id": "v4n5q8ix",
+      "ts": 1778017708409,
+      "actor": "Ananya",
+      "action": "Logged in"
+    },
+    {
+      "id": "dco4gf5j",
+      "ts": 1778017703496,
+      "actor": "Ananya",
+      "action": "Account created"
+    },
+    {
+      "id": "r5dnewzk",
+      "ts": 1778016915421,
+      "actor": "khushi",
+      "action": "Submitted water request for 30 ML at My current location"
+    },
+    {
+      "id": "s7r5g9yq",
+      "ts": 1778016885014,
+      "actor": "User",
+      "action": "Saved location My current location, Live GPS, Device location"
+    },
+    {
+      "id": "9n2r8pr8",
+      "ts": 1778016877854,
+      "actor": "khushi",
+      "action": "Logged in"
+    },
+    {
+      "id": "84zscknf",
+      "ts": 1778016850568,
+      "actor": "khushi",
+      "action": "Account created"
+    },
+    {
+      "id": "ib9cj243",
+      "ts": 1778015642772,
+      "actor": "Admin",
+      "action": "Completed request from khushic (30 ML, My current location)"
+    },
+    {
+      "id": "51n6vroc",
+      "ts": 1778015639574,
+      "actor": "Admin",
+      "action": "Approved request from khushic (30 ML, My current location)"
+    },
+    {
+      "id": "3j840soi",
+      "ts": 1778015611792,
+      "actor": "Admin",
+      "action": "Viewed request on map for khushic (30 ML)"
+    },
+    {
+      "id": "lpl3l3je",
+      "ts": 1778015489411,
+      "actor": "yasmin",
+      "action": "Logged in"
+    },
+    {
+      "id": "x19lhtwb",
+      "ts": 1778015463244,
+      "actor": "yasmin",
+      "action": "Account created"
+    },
+    {
+      "id": "l2am7ku0",
+      "ts": 1778015292175,
+      "actor": "khushic",
+      "action": "Submitted water request for 30 ML at My current location"
+    },
+    {
+      "id": "v2jlrwu6",
+      "ts": 1778015209339,
+      "actor": "User",
+      "action": "Saved location My current location, Live GPS, Device location"
+    },
+    {
+      "id": "ktmr1xms",
+      "ts": 1778015166706,
+      "actor": "khushic",
+      "action": "Logged in"
+    },
+    {
+      "id": "9ixkhgua",
+      "ts": 1778015161154,
+      "actor": "khushic",
+      "action": "Account created"
+    },
+    {
+      "id": "l1",
+      "ts": 1778011523200,
+      "actor": "System",
+      "action": "Demo data initialized"
+    }
+  ],
+  "combinedPlans": [
+    {
+      "id": "17jelzua",
+      "area": "My current location",
+      "city": "Live GPS",
+      "pincode": "Device location",
+      "requestIds": [
+        "5bi0cvhq",
+        "6xlddwm8",
+        "ahsugep6"
+      ],
+      "totalAmount": 90,
+      "createdAt": 1778017996882
+    }
+  ],
+  "theme": "light"
+}
