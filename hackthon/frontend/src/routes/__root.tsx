@@ -28,11 +28,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AquaFlow — Smart Water Allocation System" },
+      { title: "AquaResolve AI - Fair Urban Water Distribution System" },
       {
         name: "description",
-        content:
-          "Urban Water Supply Conflict Resolver — fair, time-bound water allocation for cities.",
+        content: "AI-powered smart city platform for fair, real-time urban water distribution.",
       },
     ],
     links: [{ rel: "stylesheet", href: appCss }],

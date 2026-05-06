@@ -10,7 +10,7 @@ export function SiteNav() {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 backdrop-blur">
             <Droplets className="h-5 w-5" />
           </div>
-          <span className="font-semibold tracking-tight">WaterWise</span>
+          <span className="font-semibold tracking-tight">AquaResolve AI</span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-white/90 md:flex">
           <Link to="/services" className="hover:text-white">

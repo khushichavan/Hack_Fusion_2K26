@@ -10,8 +10,8 @@ import { AuthShell, Field, RoleSelect } from "./login";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Sign up - WaterWise" },
-      { name: "description", content: "Create your WaterWise account." },
+      { title: "Sign up - AquaResolve AI" },
+      { name: "description", content: "Create your AquaResolve AI account." },
     ],
   }),
   component: SignupPage,
@@ -28,7 +28,7 @@ function SignupPage() {
     password: "",
     confirm: "",
   });
-  const [role, setRole] = useState<Role>("user");
+  const [role, setRole] = useState<Role>("citizen");
   const [submitting, setSubmitting] = useState(false);
 
   const onChange = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -73,7 +73,7 @@ function SignupPage() {
   };
 
   return (
-    <AuthShell title="Create your account" subtitle="Join WaterWise in under a minute.">
+    <AuthShell title="Create your account" subtitle="Join AquaResolve AI in under a minute.">
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label="Full name">
           <Input required value={form.name} onChange={onChange("name")} placeholder="Jane Doe" />

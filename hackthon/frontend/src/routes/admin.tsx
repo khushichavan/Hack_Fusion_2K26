@@ -2,7 +2,6 @@ import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
 import {
   AlertTriangle,
   Droplets,
-  FileSearch,
   Gauge,
   History,
   Inbox,
@@ -18,13 +17,13 @@ export const Route = createFileRoute("/admin")({
 });
 
 const items: NavItem[] = [
-  { to: "/admin", label: "Profile", icon: User },
-  { to: "/admin/supply", label: "Supply Management", icon: Droplets },
-  { to: "/admin/demand", label: "Demand Management", icon: Gauge },
-  { to: "/admin/allocation", label: "Allocation", icon: PieChart },
-  { to: "/admin/conflict", label: "Conflict Resolution", icon: AlertTriangle },
-  { to: "/admin/logs", label: "Audit Logs", icon: History },
-  { to: "/admin/requests", label: "User Requests", icon: Inbox },
+  { to: "/admin", label: "Dashboard", icon: Gauge },
+  { to: "/admin/supply", label: "Water Map", icon: Droplets },
+  { to: "/admin/allocation", label: "Allocation Analytics", icon: PieChart },
+  { to: "/admin/requests", label: "Complaints", icon: Inbox },
+  { to: "/admin/conflict", label: "Emergency Control", icon: AlertTriangle },
+  { to: "/admin/logs", label: "Notifications", icon: History },
+  { to: "/admin/settings", label: "Profile", icon: User },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -32,10 +31,10 @@ function AdminLayout() {
   if (typeof window !== "undefined") {
     const s = getSession();
     if (!s) return <Navigate to="/login" />;
-    if (s.role !== "admin") return <Navigate to="/dashboard" />;
+    if (s.role !== "admin" && s.role !== "authority") return <Navigate to="/dashboard" />;
   }
   return (
-    <DashboardLayout items={items} title="Admin Dashboard">
+    <DashboardLayout items={items} title="AquaResolve AI Command Center">
       <Outlet />
     </DashboardLayout>
   );

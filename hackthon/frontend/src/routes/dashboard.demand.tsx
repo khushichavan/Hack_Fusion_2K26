@@ -24,6 +24,7 @@ import {
   type Priority,
 } from "@/lib/store";
 import { toast } from "sonner";
+import { apiCreateComplaint } from "@/lib/api";
 
 export const Route = createFileRoute("/dashboard/demand")({
   component: DemandPage,
@@ -96,6 +97,14 @@ function DemandPage() {
       user.email,
     );
     toast.success("Water request submitted successfully with location");
+    apiCreateComplaint({
+      user_email: user.email,
+      zone_id: "zone-c",
+      category: form.purpose,
+      description: form.description || `${form.purpose} request for ${form.amount} ML`,
+      lat: savedLocation.lat,
+      lng: savedLocation.lng,
+    }).catch(() => undefined);
     setForm({ ...blank, minutes: defaultTtl });
   };
 
@@ -115,7 +124,7 @@ function DemandPage() {
         </div>
       </div>
 
-      <h3 className="mb-4 text-lg font-semibold">Submit water request</h3>
+      <h3 className="mb-4 text-lg font-semibold">Submit complaint or water request</h3>
       <form onSubmit={submit} className="space-y-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">

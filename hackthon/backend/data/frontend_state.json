@@ -92,6 +92,15 @@
       "location": "varur",
       "password": "",
       "role": "user"
+    },
+    {
+      "id": "xvuntd1u",
+      "name": "Ananya",
+      "email": "ananya4@gmail.com",
+      "phone": "4567891230",
+      "location": "arlikatti",
+      "password": "",
+      "role": "authority"
     }
   ],
   "totalSupply": 900,
@@ -243,6 +252,22 @@
   ],
   "notifications": [
     {
+      "id": "lisanuak",
+      "title": "Welcome back",
+      "body": "Signed in as authority.",
+      "createdAt": 1778029451909,
+      "read": false,
+      "forEmail": "ananya4@gmail.com"
+    },
+    {
+      "id": "sx3cn97o",
+      "title": "Welcome back",
+      "body": "Signed in as authority.",
+      "createdAt": 1778027875069,
+      "read": false,
+      "forEmail": "ananya4@gmail.com"
+    },
+    {
       "id": "hge7klp2",
       "title": "Welcome back",
       "body": "Signed in as user.",
@@ -379,6 +404,24 @@
     }
   ],
   "logs": [
+    {
+      "id": "5k1ggubg",
+      "ts": 1778029451909,
+      "actor": "Ananya",
+      "action": "Logged in"
+    },
+    {
+      "id": "1mvsc5ot",
+      "ts": 1778027875069,
+      "actor": "Ananya",
+      "action": "Logged in"
+    },
+    {
+      "id": "y57iw3m4",
+      "ts": 1778027870453,
+      "actor": "Ananya",
+      "action": "Account created"
+    },
     {
       "id": "2s0nddjl",
       "ts": 1778020109846,

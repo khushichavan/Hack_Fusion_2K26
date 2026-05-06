@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { apiGetFrontendState, apiSaveFrontendState } from "./api";
 
-export type Role = "user" | "admin";
+export type Role = "citizen" | "authority" | "admin" | "user";
 export type Priority = "high" | "medium" | "low";
 export type Category = "Hospital" | "Residential" | "Industry";
 export type RequestStatus =
@@ -128,7 +128,7 @@ const seed = (): AppState => ({
       phone: "+1 555 0100",
       location: "Sector 12",
       password: "user123",
-      role: "user",
+      role: "citizen",
     },
   ],
   totalSupply: 1500,

@@ -13,8 +13,8 @@ import heroImg from "@/assets/hero-water.jpg";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Login - WaterWise" },
-      { name: "description", content: "Sign in to WaterWise." },
+      { title: "Login - AquaResolve AI" },
+      { name: "description", content: "Sign in to AquaResolve AI." },
     ],
   }),
   component: LoginPage,
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const navigate = useNavigate();
   const users = useStore((s) => s.users);
-  const [role, setRole] = useState<Role>("user");
+  const [role, setRole] = useState<Role>("citizen");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -52,13 +52,22 @@ function LoginPage() {
         const exists = s.users.some(
           (u) => u.email.trim().toLowerCase() === found.email.trim().toLowerCase(),
         );
-        return exists ? s : { ...s, users: [...s.users, found] };
+        return exists
+          ? {
+              ...s,
+              users: s.users.map((u) =>
+                u.email.trim().toLowerCase() === found.email.trim().toLowerCase()
+                  ? { ...u, role: found.role }
+                  : u,
+              ),
+            }
+          : { ...s, users: [...s.users, found] };
       });
       setSession({ email: found.email, role: found.role });
       addLog(found.name, "Logged in");
       notify("Welcome back", `Signed in as ${found.role}.`, found.email);
       toast.success("Welcome back!");
-      navigate({ to: role === "admin" ? "/admin" : "/dashboard" });
+      navigate({ to: role === "citizen" || role === "user" ? "/dashboard" : "/admin" });
     } catch (error) {
       console.error(error);
       toast.error("Invalid email, password, or backend is not running");
@@ -68,7 +77,7 @@ function LoginPage() {
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in to manage your WaterWise allocations.">
+    <AuthShell title="Welcome back" subtitle="Sign in to manage AquaResolve AI allocations.">
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label="Email">
           <Input
@@ -128,13 +137,13 @@ export function AuthShell({
         />
         <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(5,45,58,0.92),rgba(12,91,96,0.78),rgba(55,94,70,0.56))]" />
         <Link to="/" className="relative z-10 flex items-center gap-2 font-semibold">
-          <Droplets className="h-5 w-5" /> WaterWise
+          <Droplets className="h-5 w-5" /> AquaResolve AI
         </Link>
         <div className="relative z-10 max-w-md">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
             <Waves className="h-3.5 w-3.5" /> Distribution intelligence
           </div>
-          <h2 className="text-3xl font-bold">WaterWise keeps city supply decisions clear.</h2>
+          <h2 className="text-3xl font-bold">AquaResolve AI keeps city supply decisions clear.</h2>
           <p className="mt-3 max-w-sm text-white/80">
             Visualize demand, route requests by location, and keep allocation decisions transparent.
           </p>
@@ -154,7 +163,7 @@ export function AuthShell({
             ))}
           </div>
         </div>
-        <p className="relative z-10 text-xs text-white/60">(c) WaterWise 2026</p>
+        <p className="relative z-10 text-xs text-white/60">(c) AquaResolve AI 2026</p>
       </div>
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md">
@@ -179,7 +188,7 @@ export function Field({ label, children }: { label: string; children: React.Reac
 export function RoleSelect({ value, onChange }: { value: Role; onChange: (r: Role) => void }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      {(["user", "admin"] as Role[]).map((r) => (
+      {(["citizen", "authority", "admin"] as Role[]).map((r) => (
         <button
           key={r}
           type="button"

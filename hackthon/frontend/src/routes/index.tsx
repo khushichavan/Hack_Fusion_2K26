@@ -7,7 +7,7 @@ import heroImg from "@/assets/hero-water.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "WaterWise - Urban Water Distribution Platform" },
+      { title: "AquaResolve AI - Fair Urban Water Distribution System" },
       {
         name: "description",
         content:
@@ -34,11 +34,13 @@ function Landing() {
         <SiteNav />
         <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
           <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium backdrop-blur">
-            <Waves className="h-3.5 w-3.5" /> Urban Water Distribution Platform
+            <Waves className="h-3.5 w-3.5" /> Fair Urban Water Distribution System
           </span>
-          <h1 className="text-balance text-5xl font-bold tracking-tight md:text-7xl">WaterWise</h1>
+          <h1 className="text-balance text-5xl font-bold tracking-tight md:text-7xl">
+            AquaResolve AI
+          </h1>
           <h2 className="mt-4 text-balance text-2xl font-semibold md:text-4xl">
-            Urban Water Distribution Platform
+            Fair Urban Water Distribution System
           </h2>
           <p className="mt-6 max-w-2xl text-balance text-lg text-white/85 md:text-xl">
             Resolve urban water supply conflicts in real time. Monitor demand, allocate fairly, and
@@ -121,9 +123,9 @@ function Landing() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center gap-2">
             <Droplets className="h-4 w-4 text-primary" />
-            <span>WaterWise - Urban Water Distribution</span>
+            <span>AquaResolve AI - Fair Urban Water Distribution</span>
           </div>
-          <div>(c) 2026 WaterWise. All rights reserved.</div>
+          <div>(c) 2026 AquaResolve AI. All rights reserved.</div>
         </div>
       </footer>
     </div>
