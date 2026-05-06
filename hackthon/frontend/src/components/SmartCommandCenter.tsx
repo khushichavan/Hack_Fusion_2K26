@@ -24,6 +24,11 @@ import {
 } from "@/lib/api";
 import { toast } from "sonner";
 
+const WS_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8001").replace(
+  /^http/,
+  "ws",
+);
+
 const fallback: PlatformSnapshot = {
   platform: "AquaResolve AI",
   database: "local-demo",
@@ -154,7 +159,7 @@ export function SmartCommandCenter({ mode }: { mode: "admin" | "citizen" }) {
       .catch(() => toast.error("Using local demo data because backend snapshot is unavailable"))
       .finally(() => mounted && setLoading(false));
 
-    const ws = new WebSocket("ws://127.0.0.1:8001/ws");
+    const ws = new WebSocket(`${WS_BASE_URL}/ws`);
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.event === "snapshot") setSnapshot(message.payload);

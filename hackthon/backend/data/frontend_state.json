@@ -101,6 +101,31 @@
       "location": "arlikatti",
       "password": "",
       "role": "authority"
+    },
+    {
+      "id": "im6emtoi",
+      "name": "abc",
+      "email": "abcxyz@gmail.com",
+      "phone": "9876543210",
+      "location": "dharwad",
+      "password": "",
+      "role": "citizen",
+      "savedLocation": {
+        "area": "My current location",
+        "city": "Live GPS",
+        "pincode": "Device location",
+        "lat": 15.21645604274232,
+        "lng": 75.14183160242128
+      }
+    },
+    {
+      "id": "l1qbheu6",
+      "name": "userabc",
+      "email": "user@gmail.com",
+      "phone": "7896541230",
+      "location": "hubli",
+      "password": "",
+      "role": "citizen"
     }
   ],
   "totalSupply": 900,
@@ -251,6 +276,22 @@
     }
   ],
   "notifications": [
+    {
+      "id": "1dhk7lrv",
+      "title": "Welcome back",
+      "body": "Signed in as citizen.",
+      "createdAt": 1778038058238,
+      "read": false,
+      "forEmail": "user@gmail.com"
+    },
+    {
+      "id": "lrzg5sdl",
+      "title": "Welcome back",
+      "body": "Signed in as citizen.",
+      "createdAt": 1778033302205,
+      "read": false,
+      "forEmail": "abcxyz@gmail.com"
+    },
     {
       "id": "lisanuak",
       "title": "Welcome back",
@@ -404,6 +445,42 @@
     }
   ],
   "logs": [
+    {
+      "id": "ylzbj87s",
+      "ts": 1778038058238,
+      "actor": "userabc",
+      "action": "Logged in"
+    },
+    {
+      "id": "vr9sek0j",
+      "ts": 1778038052723,
+      "actor": "userabc",
+      "action": "Account created"
+    },
+    {
+      "id": "yvgdkeph",
+      "ts": 1778033372840,
+      "actor": "User",
+      "action": "Saved location My current location, Live GPS, Device location"
+    },
+    {
+      "id": "jqwcb9l0",
+      "ts": 1778033359001,
+      "actor": "User",
+      "action": "Saved location My current location, Live GPS, Device location"
+    },
+    {
+      "id": "ty4p77q4",
+      "ts": 1778033302205,
+      "actor": "abc",
+      "action": "Logged in"
+    },
+    {
+      "id": "v3z1m47n",
+      "ts": 1778033227684,
+      "actor": "abc",
+      "action": "Account created"
+    },
     {
       "id": "5k1ggubg",
       "ts": 1778029451909,

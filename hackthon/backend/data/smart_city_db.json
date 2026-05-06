@@ -35,6 +35,24 @@
       "role": "authority",
       "reward_points": 0,
       "created_at": "2026-05-06T00:37:50.439588+00:00"
+    },
+    {
+      "id": "usr-fd4728d5",
+      "username": "abc",
+      "email": "abcxyz@gmail.com",
+      "password_hash": "598559d8ac775ad7631a35d31e0e4a40$b4054ba3b9e10afc7e86da8a70fc470814feb0c22e6450de676a30bf2f0f672e",
+      "role": "citizen",
+      "reward_points": 420,
+      "created_at": "2026-05-06T02:07:07.652628+00:00"
+    },
+    {
+      "id": "usr-81e44a35",
+      "username": "userabc",
+      "email": "user@gmail.com",
+      "password_hash": "e760cd798b55ea4f1d36e93a49cd935c$b6ecfe3b60a24281febc9424601febd027f59acb69fbda7bafb96dab88f1c51a",
+      "role": "citizen",
+      "reward_points": 420,
+      "created_at": "2026-05-06T03:27:32.709714+00:00"
     }
   ],
   "water_zones": [
@@ -237,6 +255,61 @@
         }
       ],
       "city_fairness_score": 99.0
+    },
+    {
+      "id": "alloc-ccbc8ecf",
+      "timestamp": "2026-05-06T02:11:50.463021+00:00",
+      "total_supply": 1850.0,
+      "drought_severity": 0.42,
+      "emergency_type": null,
+      "allocations": [
+        {
+          "zone_id": "zone-a",
+          "zone": "Central Hospital District",
+          "allocation_ml": 487.82,
+          "demand_ml": 130.84,
+          "fairness_score": 99,
+          "status": "balanced",
+          "explanation": "Central Hospital District received priority allocation because hospital demand increased."
+        },
+        {
+          "zone_id": "zone-b",
+          "zone": "Sector 12 Residential",
+          "allocation_ml": 337.65,
+          "demand_ml": 174.31,
+          "fairness_score": 99,
+          "status": "balanced",
+          "explanation": "Sector 12 Residential received priority allocation because hospital demand increased."
+        },
+        {
+          "zone_id": "zone-c",
+          "zone": "Riverside Low Income Belt",
+          "allocation_ml": 388.4,
+          "demand_ml": 180.89,
+          "fairness_score": 99,
+          "status": "balanced",
+          "explanation": "Riverside Low Income Belt received priority allocation because hospital demand increased."
+        },
+        {
+          "zone_id": "zone-d",
+          "zone": "Industrial Park",
+          "allocation_ml": 197.41,
+          "demand_ml": 58.27,
+          "fairness_score": 99,
+          "status": "balanced",
+          "explanation": "Industrial Park was capped to prevent hoarding and abnormal usage."
+        },
+        {
+          "zone_id": "zone-e",
+          "zone": "Old Town Fire Corridor",
+          "allocation_ml": 438.71,
+          "demand_ml": 104.53,
+          "fairness_score": 99,
+          "status": "balanced",
+          "explanation": "Old Town Fire Corridor received priority allocation because hospital demand increased."
+        }
+      ],
+      "city_fairness_score": 99.0
     }
   ],
   "emergency_events": [],
@@ -321,6 +394,70 @@
       "action": "Logged in",
       "details": {
         "role": "authority"
+      }
+    },
+    {
+      "id": "log-3605fb48",
+      "timestamp": "2026-05-06T02:05:41.867230+00:00",
+      "actor": "Ananya",
+      "action": "Logged in",
+      "details": {
+        "role": "authority"
+      }
+    },
+    {
+      "id": "log-20533e4b",
+      "timestamp": "2026-05-06T02:07:07.666024+00:00",
+      "actor": "abc",
+      "action": "Created account",
+      "details": {
+        "role": "citizen"
+      }
+    },
+    {
+      "id": "log-54493c5e",
+      "timestamp": "2026-05-06T02:07:23.908791+00:00",
+      "actor": "Ananya",
+      "action": "Logged in",
+      "details": {
+        "role": "authority"
+      }
+    },
+    {
+      "id": "log-0b67efd5",
+      "timestamp": "2026-05-06T02:08:22.190149+00:00",
+      "actor": "abc",
+      "action": "Logged in",
+      "details": {
+        "role": "citizen"
+      }
+    },
+    {
+      "id": "log-8956bdbe",
+      "timestamp": "2026-05-06T02:11:50.469577+00:00",
+      "actor": "AquaResolve AI",
+      "action": "Generated fair allocation",
+      "details": {
+        "total_supply": 1850.0,
+        "emergency": null
+      }
+    },
+    {
+      "id": "log-15c77493",
+      "timestamp": "2026-05-06T03:27:32.713602+00:00",
+      "actor": "userabc",
+      "action": "Created account",
+      "details": {
+        "role": "citizen"
+      }
+    },
+    {
+      "id": "log-5a45e582",
+      "timestamp": "2026-05-06T03:27:38.230317+00:00",
+      "actor": "userabc",
+      "action": "Logged in",
+      "details": {
+        "role": "citizen"
       }
     }
   ],
