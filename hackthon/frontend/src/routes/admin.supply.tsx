@@ -46,19 +46,37 @@ function SupplyMgmt() {
       <Card className="p-6">
         <h3 className="mb-4 text-lg font-semibold">Total water supply</h3>
         <div className="space-y-4">
-          <div className="space-y-2"><Label>Daily supply target (ML)</Label><Input type="number" value={val} onChange={(e) => setVal(Number(e.target.value))} /></div>
+          <div className="space-y-2">
+            <Label>Daily supply target (ML)</Label>
+            <Input type="number" value={val} onChange={(e) => setVal(Number(e.target.value))} />
+          </div>
           <div className="flex flex-wrap gap-2">
             <Button onClick={save}>Save / Update</Button>
-            <Button variant="outline" onClick={reduce}>Reduce supply (-200)</Button>
-            <Button variant="secondary" onClick={recalc}>Recalculate allocation</Button>
+            <Button variant="outline" onClick={reduce}>
+              Reduce supply (-200)
+            </Button>
+            <Button variant="secondary" onClick={recalc}>
+              Recalculate allocation
+            </Button>
           </div>
         </div>
       </Card>
       <Card className="p-6">
         <h3 className="mb-4 text-lg font-semibold">Allocation time limit</h3>
-        <p className="text-sm text-muted-foreground">All new allocations expire after this many minutes.</p>
+        <p className="text-sm text-muted-foreground">
+          All new allocations expire after this many minutes.
+        </p>
         <div className="mt-4 space-y-4">
-          <div className="space-y-2"><Label>Minutes</Label><Input type="number" min={5} max={240} value={limit} onChange={(e) => setLimit(Number(e.target.value))} /></div>
+          <div className="space-y-2">
+            <Label>Minutes</Label>
+            <Input
+              type="number"
+              min={5}
+              max={240}
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+            />
+          </div>
           <Button onClick={saveTtl}>Update time limit</Button>
         </div>
       </Card>

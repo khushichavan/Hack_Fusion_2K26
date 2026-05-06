@@ -33,5 +33,12 @@
     "password_hash": "ab19a488687346a9372433e38264390a$b28e23f6c4dd95f578717a747eca6664933d7e59d802b808c4c9d3fb3ae13ff8",
     "role": "admin",
     "created_at": "2026-05-06T03:20:38.660242"
+  },
+  "kavya1@gmail.com": {
+    "username": "kavya",
+    "email": "kavya1@gmail.com",
+    "password_hash": "d178a92206a9ca31f91d1473423a5e4c$f74d1f1b5d0512b91a6a6af9c5a25f44276e3e74adc3e0db50bf4fb09346d13f",
+    "role": "user",
+    "created_at": "2026-05-06T03:57:34.308650"
   }
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Droplets } from "lucide-react";
+import { Droplets, MapPinned, ShieldCheck, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,15 @@ import { setSession, setState, useStore, type Role } from "@/lib/store";
 import { addLog, notify } from "@/lib/store";
 import { apiLogin } from "@/lib/api";
 import { toast } from "sonner";
+import heroImg from "@/assets/hero-water.jpg";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Login — AquaFlow" }, { name: "description", content: "Sign in to AquaFlow." }] }),
+  head: () => ({
+    meta: [
+      { title: "Login - WaterWise" },
+      { name: "description", content: "Sign in to WaterWise." },
+    ],
+  }),
   component: LoginPage,
 });
 
@@ -31,7 +37,9 @@ function LoginPage() {
         toast.error("Invalid role for this account");
         return;
       }
-      const found = users.find((u) => u.email.trim().toLowerCase() === result.user.email.trim().toLowerCase()) ?? {
+      const found = users.find(
+        (u) => u.email.trim().toLowerCase() === result.user.email.trim().toLowerCase(),
+      ) ?? {
         id: result.user.email,
         name: result.user.username,
         email: result.user.email,
@@ -41,7 +49,9 @@ function LoginPage() {
         role: result.user.role,
       };
       setState((s) => {
-        const exists = s.users.some((u) => u.email.trim().toLowerCase() === found.email.trim().toLowerCase());
+        const exists = s.users.some(
+          (u) => u.email.trim().toLowerCase() === found.email.trim().toLowerCase(),
+        );
         return exists ? s : { ...s, users: [...s.users, found] };
       });
       setSession({ email: found.email, role: found.role });
@@ -58,31 +68,93 @@ function LoginPage() {
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in to manage your water allocations.">
+    <AuthShell title="Welcome back" subtitle="Sign in to manage your WaterWise allocations.">
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@city.gov" /></Field>
-        <Field label="Password"><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" /></Field>
-        <Field label="Role"><RoleSelect value={role} onChange={setRole} /></Field>
-        <Button type="submit" className="w-full" disabled={submitting}>{submitting ? "Signing in..." : "Sign in"}</Button>
+        <Field label="Email">
+          <Input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="user@city.gov"
+          />
+        </Field>
+        <Field label="Password">
+          <Input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="********"
+          />
+        </Field>
+        <Field label="Role">
+          <RoleSelect value={role} onChange={setRole} />
+        </Field>
+        <Button type="submit" className="w-full" disabled={submitting}>
+          {submitting ? "Signing in..." : "Sign in"}
+        </Button>
         <p className="text-center text-xs text-muted-foreground">
-          Demo: <span className="font-mono">user@city.gov / user123</span> · <span className="font-mono">admin@city.gov / admin123</span>
+          Demo: <span className="font-mono">user@city.gov / user123</span> |{" "}
+          <span className="font-mono">admin@city.gov / admin123</span>
         </p>
-        <p className="text-center text-sm text-muted-foreground">No account? <Link to="/signup" className="font-medium text-primary hover:underline">Create account</Link></p>
+        <p className="text-center text-sm text-muted-foreground">
+          No account?{" "}
+          <Link to="/signup" className="font-medium text-primary hover:underline">
+            Create account
+          </Link>
+        </p>
       </form>
     </AuthShell>
   );
 }
 
-export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
+export function AuthShell({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="grid min-h-screen md:grid-cols-2">
-      <div className="hidden bg-[var(--gradient-hero)] p-12 text-white md:flex md:flex-col md:justify-between">
-        <Link to="/" className="flex items-center gap-2 font-semibold"><Droplets className="h-5 w-5" /> AquaFlow</Link>
-        <div>
-          <h2 className="text-3xl font-bold">Smart water allocation, made fair.</h2>
-          <p className="mt-3 max-w-sm text-white/80">Join cities using AquaFlow to keep every neighborhood flowing.</p>
+      <div className="relative hidden overflow-hidden p-12 text-white md:flex md:flex-col md:justify-between">
+        <img
+          src={heroImg}
+          alt="Urban river and water infrastructure"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(5,45,58,0.92),rgba(12,91,96,0.78),rgba(55,94,70,0.56))]" />
+        <Link to="/" className="relative z-10 flex items-center gap-2 font-semibold">
+          <Droplets className="h-5 w-5" /> WaterWise
+        </Link>
+        <div className="relative z-10 max-w-md">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
+            <Waves className="h-3.5 w-3.5" /> Distribution intelligence
+          </div>
+          <h2 className="text-3xl font-bold">WaterWise keeps city supply decisions clear.</h2>
+          <p className="mt-3 max-w-sm text-white/80">
+            Visualize demand, route requests by location, and keep allocation decisions transparent.
+          </p>
+          <div className="mt-8 grid gap-3">
+            {[
+              { icon: MapPinned, label: "Location-aware citizen requests" },
+              { icon: ShieldCheck, label: "Separate admin and user workflows" },
+              { icon: Droplets, label: "Real-time allocation status" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center gap-3 rounded-lg bg-white/12 p-3 backdrop-blur"
+              >
+                <item.icon className="h-4 w-4" />
+                <span className="text-sm">{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="text-xs text-white/60">© AquaFlow 2026</p>
+        <p className="relative z-10 text-xs text-white/60">(c) WaterWise 2026</p>
       </div>
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md">
@@ -96,15 +168,24 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
 }
 
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div className="space-y-2"><Label>{label}</Label>{children}</div>;
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      {children}
+    </div>
+  );
 }
 
 export function RoleSelect({ value, onChange }: { value: Role; onChange: (r: Role) => void }) {
   return (
     <div className="grid grid-cols-2 gap-2">
       {(["user", "admin"] as Role[]).map((r) => (
-        <button key={r} type="button" onClick={() => onChange(r)}
-          className={`rounded-md border px-3 py-2 text-sm font-medium capitalize transition-colors ${value === r ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-muted"}`}>
+        <button
+          key={r}
+          type="button"
+          onClick={() => onChange(r)}
+          className={`rounded-md border px-3 py-2 text-sm font-medium capitalize transition-colors ${value === r ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-muted"}`}
+        >
           {r}
         </button>
       ))}

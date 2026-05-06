@@ -50,5 +50,55 @@
     "details": {
       "email": "nagveni@gmail.com"
     }
+  },
+  {
+    "timestamp": "2026-05-06T03:55:00.748858",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "nagveni@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:55:06.365272",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "nagveni@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:55:26.668719",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "nagveni@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:57:34.315109",
+    "action": "USER_SIGNUP",
+    "details": {
+      "email": "kavya1@gmail.com",
+      "username": "kavya"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:58:18.346634",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "kavya1@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T03:58:29.840312",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "kavya1@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-06T04:00:08.886186",
+    "action": "USER_LOGIN",
+    "details": {
+      "email": "kavya1@gmail.com"
+    }
   }
 ]

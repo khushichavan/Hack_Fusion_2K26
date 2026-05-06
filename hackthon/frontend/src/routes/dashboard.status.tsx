@@ -2,7 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getSession, sweepExpired, useStore, type RequestStatus } from "@/lib/store";
 
 export const Route = createFileRoute("/dashboard/status")({
@@ -28,16 +35,23 @@ function fmt(ms: number) {
   return `${Math.floor(s / 60)}m ${s % 60}s`;
 }
 
-function locationTitle(request: { location?: { area?: string }; coordinates?: { lat: number; lng: number } }) {
+function locationTitle(request: {
+  location?: { area?: string };
+  coordinates?: { lat: number; lng: number };
+}) {
   if (request.location?.area?.trim()) return request.location.area;
   if (request.coordinates) return "GPS location";
   return "Location unavailable";
 }
 
-function locationSubtitle(request: { location?: { city?: string; pincode?: string }; coordinates?: { lat: number; lng: number } }) {
+function locationSubtitle(request: {
+  location?: { city?: string; pincode?: string };
+  coordinates?: { lat: number; lng: number };
+}) {
   const parts = [request.location?.city, request.location?.pincode].filter(Boolean);
   if (parts.length) return parts.join(" | ");
-  if (request.coordinates) return `${request.coordinates.lat.toFixed(4)}, ${request.coordinates.lng.toFixed(4)}`;
+  if (request.coordinates)
+    return `${request.coordinates.lat.toFixed(4)}, ${request.coordinates.lng.toFixed(4)}`;
   return "No saved coordinates";
 }
 
@@ -48,8 +62,6 @@ function submittedAt(value: number | undefined) {
 function StatusPage() {
   const session = getSession();
   const normalizedEmail = session?.email?.trim().toLowerCase();
-  // Keep the external-store snapshot stable. Filtering inside useStore creates
-  // a new array on every snapshot and can trigger an infinite render loop.
   const allRequests = useStore((s) => s.requests);
   const requests = useMemo(
     () => allRequests.filter((r) => r.userEmail?.trim().toLowerCase() === normalizedEmail),
@@ -58,8 +70,10 @@ function StatusPage() {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
-    // Runs once on mount; the interval owns the ticking state update.
-    const timer = setInterval(() => { sweepExpired(); setNow(Date.now()); }, 1000);
+    const timer = setInterval(() => {
+      sweepExpired();
+      setNow(Date.now());
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -67,7 +81,9 @@ function StatusPage() {
     <Card className="page-enter p-6 shadow-[var(--shadow-soft)]">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Request status</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Request status
+          </div>
           <h3 className="text-xl font-semibold">Your water requests</h3>
         </div>
         <Badge variant="secondary">{requests.length} total</Badge>
@@ -103,11 +119,17 @@ function StatusPage() {
                     <div className="text-xs text-muted-foreground">{locationSubtitle(request)}</div>
                   </TableCell>
                   <TableCell>{request.amount ?? 0} ML</TableCell>
-                  <TableCell className="max-w-xs truncate">{request.purpose ?? "Not specified"}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {request.purpose ?? "Not specified"}
+                  </TableCell>
                   <TableCell className="capitalize">{request.priority ?? "medium"}</TableCell>
                   <TableCell>{statusBadge(request.status)}</TableCell>
-                  <TableCell className="font-mono text-sm">{isLive ? fmt(remaining) : "-"}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{submittedAt(request.submittedAt)}</TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {isLive ? fmt(remaining) : "-"}
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">
+                    {submittedAt(request.submittedAt)}
+                  </TableCell>
                 </TableRow>
               );
             })}

@@ -39,7 +39,12 @@ export function apiHealth() {
   return request<{ status: string }>("/health");
 }
 
-export function apiSignup(payload: { username: string; email: string; password: string; role: "user" | "admin" }) {
+export function apiSignup(payload: {
+  username: string;
+  email: string;
+  password: string;
+  role: "user" | "admin";
+}) {
   return request<{ message: string; user: BackendUser }>("/signup", {
     method: "POST",
     body: JSON.stringify(payload),

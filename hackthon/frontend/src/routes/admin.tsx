@@ -1,5 +1,15 @@
 import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
-import { AlertTriangle, Droplets, FileSearch, Gauge, History, Inbox, PieChart, Settings, User } from "lucide-react";
+import {
+  AlertTriangle,
+  Droplets,
+  FileSearch,
+  Gauge,
+  History,
+  Inbox,
+  PieChart,
+  Settings,
+  User,
+} from "lucide-react";
 import { DashboardLayout, type NavItem } from "@/components/DashboardLayout";
 import { getSession } from "@/lib/store";
 

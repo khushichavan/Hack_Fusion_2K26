@@ -83,6 +83,15 @@
       "location": "hubli",
       "password": "",
       "role": "admin"
+    },
+    {
+      "id": "cafx2ot6",
+      "name": "kavya",
+      "email": "kavya1@gmail.com",
+      "phone": "1568749236",
+      "location": "varur",
+      "password": "",
+      "role": "user"
     }
   ],
   "totalSupply": 900,
@@ -234,6 +243,22 @@
   ],
   "notifications": [
     {
+      "id": "hge7klp2",
+      "title": "Welcome back",
+      "body": "Signed in as user.",
+      "createdAt": 1778020109846,
+      "read": false,
+      "forEmail": "kavya1@gmail.com"
+    },
+    {
+      "id": "cl8nrwaz",
+      "title": "Welcome back",
+      "body": "Signed in as admin.",
+      "createdAt": 1778019906374,
+      "read": false,
+      "forEmail": "nagveni@gmail.com"
+    },
+    {
       "id": "sb76dm4y",
       "title": "Request completed",
       "body": "Your 30 ML request for My current location was completed.",
@@ -354,6 +379,24 @@
     }
   ],
   "logs": [
+    {
+      "id": "2s0nddjl",
+      "ts": 1778020109846,
+      "actor": "kavya",
+      "action": "Logged in"
+    },
+    {
+      "id": "klrzfvxd",
+      "ts": 1778020054325,
+      "actor": "kavya",
+      "action": "Account created"
+    },
+    {
+      "id": "cn75desj",
+      "ts": 1778019906374,
+      "actor": "nagveni",
+      "action": "Logged in"
+    },
     {
       "id": "1bbx1vqr",
       "ts": 1778017996882,

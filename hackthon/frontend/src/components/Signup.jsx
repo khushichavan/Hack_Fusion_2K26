@@ -35,10 +35,7 @@ const Signup = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <form
-        onSubmit={handleSignup}
-        className="bg-white p-6 rounded shadow-md w-96"
-      >
+      <form onSubmit={handleSignup} className="bg-white p-6 rounded shadow-md w-96">
         <h2 className="text-2xl mb-4">Signup</h2>
 
         <input
@@ -90,19 +87,13 @@ const Signup = () => {
           <option value="Admin">Admin</option>
         </select>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2"
-        >
+        <button type="submit" className="w-full bg-blue-500 text-white p-2">
           Signup
         </button>
 
         <p className="mt-2 text-sm">
           Already have an account?{" "}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={() => navigate("/login")}
-          >
+          <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>
             Login
           </span>
         </p>

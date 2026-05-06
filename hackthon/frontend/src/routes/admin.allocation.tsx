@@ -1,15 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useStore } from "@/lib/store";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export const Route = createFileRoute("/admin/allocation")({
   component: AllocationDash,
 });
 
-const COLORS = ["oklch(0.55 0.15 230)", "oklch(0.72 0.14 215)", "oklch(0.65 0.15 155)", "oklch(0.78 0.15 75)", "oklch(0.60 0.22 25)"];
+const COLORS = [
+  "oklch(0.55 0.15 230)",
+  "oklch(0.72 0.14 215)",
+  "oklch(0.65 0.15 155)",
+  "oklch(0.78 0.15 75)",
+  "oklch(0.60 0.22 25)",
+];
 
 function AllocationDash() {
   const total = useStore((s) => s.totalSupply);
@@ -38,9 +63,12 @@ function AllocationDash() {
             <ResponsiveContainer>
               <PieChart>
                 <Pie data={pie} dataKey="value" innerRadius={60} outerRadius={100} paddingAngle={3}>
-                  {pie.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  {pie.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
                 </Pie>
-                <Tooltip /><Legend />
+                <Tooltip />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -53,7 +81,8 @@ function AllocationDash() {
                 <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 230)" />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis />
-                <Tooltip /><Legend />
+                <Tooltip />
+                <Legend />
                 <Bar dataKey="demand" fill="oklch(0.78 0.15 75)" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="allocated" fill="oklch(0.55 0.15 230)" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -80,7 +109,17 @@ function AllocationDash() {
       <Card className="p-6">
         <h3 className="mb-4 font-semibold">Allocation table</h3>
         <Table>
-          <TableHeader><TableRow><TableHead>Area</TableHead><TableHead>Category</TableHead><TableHead>Demand</TableHead><TableHead>Priority</TableHead><TableHead>Allocated</TableHead><TableHead>Status</TableHead><TableHead>Justification</TableHead></TableRow></TableHeader>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Area</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Demand</TableHead>
+              <TableHead>Priority</TableHead>
+              <TableHead>Allocated</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Justification</TableHead>
+            </TableRow>
+          </TableHeader>
           <TableBody>
             {areas.map((a) => (
               <TableRow key={a.id}>
@@ -90,11 +129,21 @@ function AllocationDash() {
                 <TableCell className="capitalize">{a.priority}</TableCell>
                 <TableCell>{a.allocated} ML</TableCell>
                 <TableCell>
-                  {a.status === "Full" && <Badge className="bg-success text-success-foreground hover:bg-success">Full</Badge>}
-                  {a.status === "Partial" && <Badge className="bg-warning text-warning-foreground hover:bg-warning">Partial</Badge>}
+                  {a.status === "Full" && (
+                    <Badge className="bg-success text-success-foreground hover:bg-success">
+                      Full
+                    </Badge>
+                  )}
+                  {a.status === "Partial" && (
+                    <Badge className="bg-warning text-warning-foreground hover:bg-warning">
+                      Partial
+                    </Badge>
+                  )}
                   {a.status === "No Supply" && <Badge variant="destructive">No Supply</Badge>}
                 </TableCell>
-                <TableCell className="max-w-xs text-xs text-muted-foreground">{a.justification}</TableCell>
+                <TableCell className="max-w-xs text-xs text-muted-foreground">
+                  {a.justification}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -105,5 +154,10 @@ function AllocationDash() {
 }
 
 function Stat({ title, value }: { title: string; value: string }) {
-  return <Card className="p-6"><div className="text-xs font-medium text-muted-foreground">{title}</div><div className="mt-2 text-3xl font-bold">{value}</div></Card>;
+  return (
+    <Card className="p-6">
+      <div className="text-xs font-medium text-muted-foreground">{title}</div>
+      <div className="mt-2 text-3xl font-bold">{value}</div>
+    </Card>
+  );
 }

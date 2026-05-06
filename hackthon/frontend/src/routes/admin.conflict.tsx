@@ -25,11 +25,19 @@ function ConflictPage() {
 
   return (
     <div className="space-y-6">
-      <Card className={`p-6 ${conflict ? "border-destructive/40 bg-destructive/5" : "border-success/40 bg-success/5"}`}>
+      <Card
+        className={`p-6 ${conflict ? "border-destructive/40 bg-destructive/5" : "border-success/40 bg-success/5"}`}
+      >
         <div className="flex items-start gap-3">
-          {conflict ? <AlertTriangle className="h-6 w-6 text-destructive" /> : <CheckCircle2 className="h-6 w-6 text-success" />}
+          {conflict ? (
+            <AlertTriangle className="h-6 w-6 text-destructive" />
+          ) : (
+            <CheckCircle2 className="h-6 w-6 text-success" />
+          )}
           <div className="flex-1">
-            <h3 className="text-lg font-semibold">{conflict ? "Conflict detected" : "No active conflict"}</h3>
+            <h3 className="text-lg font-semibold">
+              {conflict ? "Conflict detected" : "No active conflict"}
+            </h3>
             <p className="text-sm text-muted-foreground">
               {conflict
                 ? `Total demand (${demand} ML) exceeds available supply (${supply} ML) by ${demand - supply} ML.`
@@ -38,16 +46,29 @@ function ConflictPage() {
           </div>
           <div className="flex gap-2">
             <Button onClick={resolve}>Resolve conflict</Button>
-            <Button variant="outline" onClick={() => { recalcAllocation("Admin"); toast.success("Allocation recalculated"); }}>Recalculate</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                recalcAllocation("Admin");
+                toast.success("Allocation recalculated");
+              }}
+            >
+              Recalculate
+            </Button>
           </div>
         </div>
       </Card>
 
       <Card className="p-6">
         <h3 className="mb-2 font-semibold">Resolution priority</h3>
-        <p className="text-sm text-muted-foreground">High → Medium → Low. Each area receives its full demand if possible, then the remainder cascades down.</p>
+        <p className="text-sm text-muted-foreground">
+          High → Medium → Low. Each area receives its full demand if possible, then the remainder
+          cascades down.
+        </p>
         <div className="mt-4 flex gap-2">
-          <Badge className="bg-destructive text-destructive-foreground hover:bg-destructive">1. High</Badge>
+          <Badge className="bg-destructive text-destructive-foreground hover:bg-destructive">
+            1. High
+          </Badge>
           <Badge className="bg-warning text-warning-foreground hover:bg-warning">2. Medium</Badge>
           <Badge className="bg-muted text-muted-foreground hover:bg-muted">3. Low</Badge>
         </div>
@@ -63,10 +84,18 @@ function ConflictPage() {
               <li key={a.id} className="rounded-lg border p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium">{a.name} <span className="text-sm text-muted-foreground">· {a.category}</span></div>
-                    <div className="text-sm text-muted-foreground capitalize">Priority: {a.priority} · {a.allocated}/{a.demand} ML</div>
+                    <div className="font-medium">
+                      {a.name} <span className="text-sm text-muted-foreground">· {a.category}</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground capitalize">
+                      Priority: {a.priority} · {a.allocated}/{a.demand} ML
+                    </div>
                   </div>
-                  {a.status === "Partial" && <Badge className="bg-warning text-warning-foreground hover:bg-warning">Partial</Badge>}
+                  {a.status === "Partial" && (
+                    <Badge className="bg-warning text-warning-foreground hover:bg-warning">
+                      Partial
+                    </Badge>
+                  )}
                   {a.status === "No Supply" && <Badge variant="destructive">No supply</Badge>}
                 </div>
                 <p className="mt-2 text-sm">{a.justification}</p>

@@ -6,7 +6,13 @@ import { apiGetFrontendState, apiSaveFrontendState } from "./api";
 export type Role = "user" | "admin";
 export type Priority = "high" | "medium" | "low";
 export type Category = "Hospital" | "Residential" | "Industry";
-export type RequestStatus = "Pending" | "Approved" | "Rejected" | "Completed" | "Expired" | "Active";
+export type RequestStatus =
+  | "Pending"
+  | "Approved"
+  | "Rejected"
+  | "Completed"
+  | "Expired"
+  | "Active";
 
 export type LocationDetails = {
   area: string;
@@ -22,6 +28,9 @@ export type StoredUser = {
   email: string;
   phone: string;
   location: string;
+  department?: string;
+  emergencyContact?: string;
+  preferredLanguage?: string;
   savedLocation?: LocationDetails;
   password: string;
   role: Role;
@@ -103,21 +112,88 @@ let remoteSyncReady = false;
 
 const seed = (): AppState => ({
   users: [
-    { id: "u-admin", name: "City Admin", email: "admin@city.gov", phone: "+1 555 0001", location: "City HQ", password: "admin123", role: "admin" },
-    { id: "u-demo", name: "Maya Citizen", email: "user@city.gov", phone: "+1 555 0100", location: "Sector 12", password: "user123", role: "user" },
+    {
+      id: "u-admin",
+      name: "City Admin",
+      email: "admin@city.gov",
+      phone: "+1 555 0001",
+      location: "City HQ",
+      password: "admin123",
+      role: "admin",
+    },
+    {
+      id: "u-demo",
+      name: "Maya Citizen",
+      email: "user@city.gov",
+      phone: "+1 555 0100",
+      location: "Sector 12",
+      password: "user123",
+      role: "user",
+    },
   ],
   totalSupply: 1500,
   defaultTtlMin: 30,
   areas: [
-    { id: "a1", name: "City General Hospital", category: "Hospital", demand: 350, priority: "high", allocated: 0, status: "No Supply", justification: "" },
-    { id: "a2", name: "Sector 12 Residential", category: "Residential", demand: 320, priority: "medium", allocated: 0, status: "No Supply", justification: "" },
-    { id: "a3", name: "Riverside Heights", category: "Residential", demand: 480, priority: "medium", allocated: 0, status: "No Supply", justification: "" },
-    { id: "a4", name: "Industrial Park", category: "Industry", demand: 600, priority: "low", allocated: 0, status: "No Supply", justification: "" },
-    { id: "a5", name: "Old Town Clinic", category: "Hospital", demand: 180, priority: "high", allocated: 0, status: "No Supply", justification: "" },
+    {
+      id: "a1",
+      name: "City General Hospital",
+      category: "Hospital",
+      demand: 350,
+      priority: "high",
+      allocated: 0,
+      status: "No Supply",
+      justification: "",
+    },
+    {
+      id: "a2",
+      name: "Sector 12 Residential",
+      category: "Residential",
+      demand: 320,
+      priority: "medium",
+      allocated: 0,
+      status: "No Supply",
+      justification: "",
+    },
+    {
+      id: "a3",
+      name: "Riverside Heights",
+      category: "Residential",
+      demand: 480,
+      priority: "medium",
+      allocated: 0,
+      status: "No Supply",
+      justification: "",
+    },
+    {
+      id: "a4",
+      name: "Industrial Park",
+      category: "Industry",
+      demand: 600,
+      priority: "low",
+      allocated: 0,
+      status: "No Supply",
+      justification: "",
+    },
+    {
+      id: "a5",
+      name: "Old Town Clinic",
+      category: "Hospital",
+      demand: 180,
+      priority: "high",
+      allocated: 0,
+      status: "No Supply",
+      justification: "",
+    },
   ],
   requests: [],
   notifications: [
-    { id: "n1", title: "Welcome to AquaFlow", body: "Your dashboard is ready.", createdAt: Date.now() - 60_000 * 30, read: false },
+    {
+      id: "n1",
+      title: "Welcome to AquaFlow",
+      body: "Your dashboard is ready.",
+      createdAt: Date.now() - 60_000 * 30,
+      read: false,
+    },
   ],
   logs: [
     { id: "l1", ts: Date.now() - 60_000 * 60, actor: "System", action: "Demo data initialized" },
@@ -145,7 +221,11 @@ function load(): AppState {
 
 const listeners = new Set<() => void>();
 function persist() {
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {
+    // localStorage can be unavailable in private browsing or SSR-like shells.
+  }
   listeners.forEach((l) => l());
   queueRemotePersist();
 }
@@ -164,18 +244,24 @@ function queueRemotePersist() {
 
 function applyRemoteState(remoteState: AppState) {
   state = { ...seed(), ...remoteState };
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {
+    // Keep the in-memory state usable even if browser storage is blocked.
+  }
   listeners.forEach((l) => l());
 }
 
 function isAppState(value: unknown): value is AppState {
   if (!value || typeof value !== "object") return false;
   const candidate = value as Partial<AppState>;
-  return Array.isArray(candidate.users)
-    && Array.isArray(candidate.areas)
-    && Array.isArray(candidate.requests)
-    && Array.isArray(candidate.notifications)
-    && typeof candidate.totalSupply === "number";
+  return (
+    Array.isArray(candidate.users) &&
+    Array.isArray(candidate.areas) &&
+    Array.isArray(candidate.requests) &&
+    Array.isArray(candidate.notifications) &&
+    typeof candidate.totalSupply === "number"
+  );
 }
 
 export async function syncStateFromBackend() {
@@ -196,7 +282,9 @@ export async function syncStateFromBackend() {
   }
 }
 
-export function getState(): AppState { return state; }
+export function getState(): AppState {
+  return state;
+}
 
 export function setState(updater: (s: AppState) => AppState) {
   state = updater(state);
@@ -205,7 +293,10 @@ export function setState(updater: (s: AppState) => AppState) {
 
 export function useStore<T>(selector: (s: AppState) => T): T {
   return useSyncExternalStore(
-    (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
+    (cb) => {
+      listeners.add(cb);
+      return () => listeners.delete(cb);
+    },
     () => selector(state),
     () => selector(state),
   );
@@ -215,7 +306,10 @@ export const uid = () => Math.random().toString(36).slice(2, 10);
 
 // --- Logs / notifications helpers ---
 export function addLog(actor: string, action: string, reason?: string) {
-  setState((s) => ({ ...s, logs: [{ id: uid(), ts: Date.now(), actor, action, reason }, ...s.logs].slice(0, 200) }));
+  setState((s) => ({
+    ...s,
+    logs: [{ id: uid(), ts: Date.now(), actor, action, reason }, ...s.logs].slice(0, 200),
+  }));
 }
 
 export function saveUserLocation(email: string, location: LocationDetails) {
@@ -241,15 +335,31 @@ export function computeRequestScore(
     Other: 1,
   };
   const urgencyMinutes = Math.max(1, Math.min(240, ttlMs / 60_000));
-  const urgencyWeight = urgencyMinutes <= 15 ? 5 : urgencyMinutes <= 30 ? 4 : urgencyMinutes <= 60 ? 3 : urgencyMinutes <= 120 ? 2 : 1;
+  const urgencyWeight =
+    urgencyMinutes <= 15
+      ? 5
+      : urgencyMinutes <= 30
+        ? 4
+        : urgencyMinutes <= 60
+          ? 3
+          : urgencyMinutes <= 120
+            ? 2
+            : 1;
   const quantityWeight = Math.min(5, Math.max(1, Math.ceil(amount / 100)));
   const priorityWeight = priority === "high" ? 4 : priority === "medium" ? 2.5 : 1;
   const score = purposeWeight[purpose] + urgencyWeight + quantityWeight + priorityWeight;
-  const scoreLabel = score >= 15 ? "Critical" : score >= 12 ? "High" : score >= 9 ? "Medium" : "Low";
+  const scoreLabel =
+    score >= 15 ? "Critical" : score >= 12 ? "High" : score >= 9 ? "Medium" : "Low";
   return { score, scoreLabel } as const;
 }
 
-export function createCombinedSupplyPlan(area: string, requestIds: string[], totalAmount: number, city?: string, pincode?: string) {
+export function createCombinedSupplyPlan(
+  area: string,
+  requestIds: string[],
+  totalAmount: number,
+  city?: string,
+  pincode?: string,
+) {
   setState((s) => ({
     ...s,
     combinedPlans: [
@@ -261,7 +371,13 @@ export function createCombinedSupplyPlan(area: string, requestIds: string[], tot
 }
 
 export function notify(title: string, body: string, forEmail?: string) {
-  setState((s) => ({ ...s, notifications: [{ id: uid(), title, body, createdAt: Date.now(), read: false, forEmail }, ...s.notifications].slice(0, 100) }));
+  setState((s) => ({
+    ...s,
+    notifications: [
+      { id: uid(), title, body, createdAt: Date.now(), read: false, forEmail },
+      ...s.notifications,
+    ].slice(0, 100),
+  }));
 }
 
 // --- Allocation logic ---
@@ -280,8 +396,8 @@ export function computeAllocation(areas: Area[], totalSupply: number): Area[] {
       give >= a.demand
         ? `Full allocation granted (priority: ${a.priority}).`
         : give > 0
-        ? `Partial allocation: ${give}/${a.demand} ML. Higher-priority demand was served first.`
-        : `No allocation: total supply was exhausted by higher-priority areas.`;
+          ? `Partial allocation: ${give}/${a.demand} ML. Higher-priority demand was served first.`
+          : `No allocation: total supply was exhausted by higher-priority areas.`;
     return { ...a, allocated: give, status, justification };
   });
   // Restore original order
@@ -299,7 +415,11 @@ export type Session = { email: string; role: Role };
 
 export function getSession(): Session | null {
   if (typeof window === "undefined") return null;
-  try { return JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); } catch { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+  } catch {
+    return null;
+  }
 }
 export function setSession(s: Session | null) {
   if (s) localStorage.setItem(AUTH_KEY, JSON.stringify(s));
@@ -350,8 +470,6 @@ export function sweepExpired() {
   );
   if (!expired.length) return;
 
-  // One functional update avoids nested addLog/notify setState calls while the
-  // request list is still being swept. That prevents circular store emissions.
   setState((s) => ({
     ...s,
     requests: s.requests.map((request) =>

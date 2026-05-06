@@ -11,7 +11,9 @@ export function getUser(): AuthUser | null {
 export function setUser(u: AuthUser) {
   setState((s) => {
     const exists = s.users.some((x) => x.email === u.email);
-    const users = exists ? s.users.map((x) => (x.email === u.email ? { ...x, ...u } : x)) : [...s.users, u];
+    const users = exists
+      ? s.users.map((x) => (x.email === u.email ? { ...x, ...u } : x))
+      : [...s.users, u];
     return { ...s, users };
   });
   setSession({ email: u.email, role: u.role });

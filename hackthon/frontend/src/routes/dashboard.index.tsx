@@ -22,7 +22,10 @@ function ProfilePage() {
   if (!u || !form) return null;
 
   const save = () => {
-    setState((s) => ({ ...s, users: s.users.map((x) => (x.email === u.email ? { ...x, ...form } : x)) }));
+    setState((s) => ({
+      ...s,
+      users: s.users.map((x) => (x.email === u.email ? { ...x, ...form } : x)),
+    }));
     addLog(form.name, "Updated profile");
     setEdit(false);
     toast.success("Profile updated");
@@ -35,7 +38,10 @@ function ProfilePage() {
     reader.onload = () => {
       const dataUrl = reader.result as string;
       setForm({ ...form, avatar: dataUrl });
-      setState((s) => ({ ...s, users: s.users.map((x) => (x.email === u.email ? { ...x, avatar: dataUrl } : x)) }));
+      setState((s) => ({
+        ...s,
+        users: s.users.map((x) => (x.email === u.email ? { ...x, avatar: dataUrl } : x)),
+      }));
       toast.success("Profile picture updated");
     };
     reader.readAsDataURL(f);
@@ -49,20 +55,37 @@ function ProfilePage() {
             {form.avatar ? (
               <img src={form.avatar} alt="" className="h-20 w-20 rounded-full object-cover" />
             ) : (
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-3xl font-semibold text-primary">{form.name.charAt(0).toUpperCase()}</div>
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-3xl font-semibold text-primary">
+                {form.name.charAt(0).toUpperCase()}
+              </div>
             )}
             <input ref={fileRef} type="file" accept="image/*" hidden onChange={onUpload} />
-            <button onClick={() => fileRef.current?.click()} className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow"><Upload className="h-3.5 w-3.5" /></button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow"
+            >
+              <Upload className="h-3.5 w-3.5" />
+            </button>
           </div>
           <div>
             <h2 className="text-2xl font-semibold">{form.name}</h2>
             <p className="text-muted-foreground capitalize">{form.role} account</p>
           </div>
           <div className="ml-auto flex gap-2">
-            <Button variant="outline" onClick={() => fileRef.current?.click()}>Upload picture</Button>
+            <Button variant="outline" onClick={() => fileRef.current?.click()}>
+              Upload picture
+            </Button>
             {edit ? (
               <>
-                <Button variant="outline" onClick={() => { setForm(u); setEdit(false); }}>Cancel</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setForm(u);
+                    setEdit(false);
+                  }}
+                >
+                  Cancel
+                </Button>
                 <Button onClick={save}>Save</Button>
               </>
             ) : (
@@ -74,7 +97,11 @@ function ProfilePage() {
           {(["name", "email", "phone", "location"] as const).map((f) => (
             <div key={f} className="space-y-2">
               <Label className="capitalize">{f}</Label>
-              <Input value={form[f]} disabled={!edit} onChange={(e) => setForm({ ...form, [f]: e.target.value })} />
+              <Input
+                value={form[f]}
+                disabled={!edit}
+                onChange={(e) => setForm({ ...form, [f]: e.target.value })}
+              />
             </div>
           ))}
         </div>
