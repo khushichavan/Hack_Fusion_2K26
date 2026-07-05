@@ -104,7 +104,10 @@ function DemandPage() {
       description: form.description || `${form.purpose} request for ${form.amount} ML`,
       lat: savedLocation.lat,
       lng: savedLocation.lng,
-    }).catch(() => undefined);
+    }).catch((error) => {
+      console.error("Failed to sync water request to backend", error);
+      toast.warning("Saved locally, but syncing to the server failed. It will retry later.");
+    });
     setForm({ ...blank, minutes: defaultTtl });
   };
 

@@ -11,13 +11,17 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 import os
 import secrets
 
+logger = logging.getLogger("aquaresolve")
+
 try:
     from pymongo import MongoClient
-except Exception:
+except ImportError as exc:
     MongoClient = None
+    logger.warning("pymongo is not installed; falling back to local JSON storage: %s", exc)
 
 DATA_DIR = Path(__file__).parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -98,15 +102,24 @@ class MongoJsonRepository:
                 client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=250)
                 client.admin.command("ping")
                 self.mongo = client[DB_NAME]
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "Could not connect to MongoDB at %s; falling back to local JSON storage: %s",
+                    MONGO_URL,
+                    exc,
+                )
                 self.mongo = None
         self.ensure_seed()
 
     def _read_all(self) -> dict[str, list[dict[str, Any]]]:
         if not DB_FILE.exists():
             return {name: [] for name in COLLECTIONS}
-        with open(DB_FILE, "r", encoding="utf-8") as handle:
-            data = json.load(handle)
+        try:
+            with open(DB_FILE, "r", encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.error("Failed to read database file %s: %s", DB_FILE, exc)
+            raise HTTPException(status_code=500, detail="Database file is corrupt or unreadable")
         return {name: data.get(name, []) for name in COLLECTIONS}
 
     def _write_all(self, data: dict[str, list[dict[str, Any]]]):
@@ -405,7 +418,8 @@ async def broadcast(event: str, payload: dict[str, Any]):
     for connection in connections:
         try:
             await connection.send_json(message)
-        except Exception:
+        except Exception as exc:
+            logger.debug("Dropping stale websocket connection: %s", exc)
             stale.append(connection)
     for connection in stale:
         connections.discard(connection)
@@ -544,14 +558,22 @@ def audit_logs(limit: int = 100):
 def get_frontend_state():
     if not frontend_state_file.exists():
         return {"state": None}
-    with open(frontend_state_file, "r", encoding="utf-8") as handle:
-        return {"state": json.load(handle)}
+    try:
+        with open(frontend_state_file, "r", encoding="utf-8") as handle:
+            return {"state": json.load(handle)}
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.error("Failed to read frontend state file %s: %s", frontend_state_file, exc)
+        raise HTTPException(status_code=500, detail="Saved frontend state is corrupt or unreadable")
 
 
 @app.put("/frontend-state")
 def save_frontend_state(request: FrontendStateRequest):
-    with open(frontend_state_file, "w", encoding="utf-8") as handle:
-        json.dump(request.state, handle, indent=2)
+    try:
+        with open(frontend_state_file, "w", encoding="utf-8") as handle:
+            json.dump(request.state, handle, indent=2)
+    except OSError as exc:
+        logger.error("Failed to write frontend state file %s: %s", frontend_state_file, exc)
+        raise HTTPException(status_code=500, detail="Could not persist frontend state")
     return {"message": "Frontend state saved successfully"}
 
 
@@ -586,7 +608,12 @@ def root():
 async def demo_realtime_pulse():
     while True:
         await asyncio.sleep(20)
-        await broadcast("city.pulse", snapshot()["analytics"])
+        try:
+            await broadcast("city.pulse", snapshot()["analytics"])
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            logger.exception("Real-time pulse broadcast failed")
 
 
 @app.on_event("startup")

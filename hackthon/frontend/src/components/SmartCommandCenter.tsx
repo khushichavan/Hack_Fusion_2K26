@@ -161,15 +161,21 @@ export function SmartCommandCenter({ mode }: { mode: "admin" | "citizen" }) {
 
     const ws = new WebSocket(`${WS_BASE_URL}/ws`);
     ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.event === "snapshot") setSnapshot(message.payload);
+      let message: { event?: string; payload?: PlatformSnapshot };
+      try {
+        message = JSON.parse(event.data);
+      } catch (error) {
+        console.error("Failed to parse websocket message", error);
+        return;
+      }
+      if (message.event === "snapshot" && message.payload) setSnapshot(message.payload);
       if (message.event?.includes("allocation") || message.event?.includes("emergency")) {
         apiPlatformSnapshot()
           .then(setSnapshot)
-          .catch(() => undefined);
+          .catch((error) => console.error("Failed to refresh snapshot after update", error));
       }
     };
-    ws.onerror = () => undefined;
+    ws.onerror = (event) => console.error("Command center websocket error", event);
     return () => {
       mounted = false;
       ws.close();
@@ -188,26 +194,36 @@ export function SmartCommandCenter({ mode }: { mode: "admin" | "citizen" }) {
   );
 
   const runAI = async () => {
-    const result = await apiRunFairness({
-      total_supply: snapshot.analytics.total_supply,
-      drought_severity: 0.42,
-    });
-    toast.success(result.message);
-    const data = await apiPlatformSnapshot();
-    setSnapshot(data);
+    try {
+      const result = await apiRunFairness({
+        total_supply: snapshot.analytics.total_supply,
+        drought_severity: 0.42,
+      });
+      toast.success(result.message);
+      const data = await apiPlatformSnapshot();
+      setSnapshot(data);
+    } catch (error) {
+      console.error("Failed to run AI fairness engine", error);
+      toast.error("Could not run the AI fairness engine. Is the backend running?");
+    }
   };
 
   const triggerEmergency = async () => {
-    const zone = snapshot.zones.find((item) => item.status === "critical") ?? snapshot.zones[0];
-    const result = await apiTriggerEmergency({
-      event_type: "hospital emergency",
-      zone_id: zone.id,
-      severity: "critical",
-      notes: "Automatic redistribution from command center",
-    });
-    toast.success(result.message);
-    const data = await apiPlatformSnapshot();
-    setSnapshot(data);
+    try {
+      const zone = snapshot.zones.find((item) => item.status === "critical") ?? snapshot.zones[0];
+      const result = await apiTriggerEmergency({
+        event_type: "hospital emergency",
+        zone_id: zone.id,
+        severity: "critical",
+        notes: "Automatic redistribution from command center",
+      });
+      toast.success(result.message);
+      const data = await apiPlatformSnapshot();
+      setSnapshot(data);
+    } catch (error) {
+      console.error("Failed to trigger emergency redistribution", error);
+      toast.error("Could not trigger emergency redistribution. Is the backend running?");
+    }
   };
 
   return (

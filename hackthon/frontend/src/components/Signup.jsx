@@ -28,8 +28,13 @@ const Signup = () => {
       alert("Signup successful");
       navigate("/login");
     } catch (error) {
-      alert("Signup failed");
-      console.log(error);
+      console.error("Signup failed", error);
+      const detail =
+        error?.response?.data?.detail ??
+        error?.response?.data?.message ??
+        error?.message ??
+        "Please check that the backend is running and try again.";
+      alert(`Signup failed: ${detail}`);
     }
   };
 
