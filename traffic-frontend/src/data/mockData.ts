@@ -1,0 +1,652 @@
+import type {
+  Activity,
+  Alert,
+  AnalyticsSummary,
+  Camera,
+  HeatCell,
+  MapMarker,
+  Prediction,
+  Road,
+  RoadRoute,
+  StatCard,
+  TrafficTrendPoint,
+  User,
+  VehicleCountPoint,
+} from "@/types";
+
+export const CITY_CENTER: [number, number] = [12.9716, 77.5946];
+
+export const currentUser: User = {
+  id: "usr-001",
+  name: "Aarav Sharma",
+  email: "aarav.sharma@trafficai.io",
+  role: "admin",
+  avatar: "https://i.pravatar.cc/150?img=12",
+  phone: "+91 98450 12345",
+  location: "Bengaluru, India",
+  bio: "Traffic operations lead focused on AI-driven congestion mitigation and smart-city mobility.",
+  createdAt: "2024-02-11T09:00:00Z",
+  lastActive: "2026-07-05T07:40:00Z",
+  status: "active",
+};
+
+export const statCards: StatCard[] = [
+  {
+    id: "current-traffic",
+    label: "Current Traffic",
+    value: "68%",
+    change: 4.2,
+    trend: "up",
+    icon: "activity",
+    accent: "from-sky-500/20 to-cyan-500/10",
+  },
+  {
+    id: "predicted-congestion",
+    label: "Predicted Congestion",
+    value: "Heavy",
+    change: 8.1,
+    trend: "up",
+    icon: "trending-up",
+    accent: "from-orange-500/20 to-amber-500/10",
+  },
+  {
+    id: "ai-accuracy",
+    label: "AI Accuracy",
+    value: "94.7%",
+    change: 1.3,
+    trend: "up",
+    icon: "brain",
+    accent: "from-violet-500/20 to-fuchsia-500/10",
+  },
+  {
+    id: "active-cameras",
+    label: "Active Cameras",
+    value: "142",
+    change: -2.0,
+    trend: "down",
+    icon: "cctv",
+    accent: "from-emerald-500/20 to-teal-500/10",
+  },
+  {
+    id: "incidents",
+    label: "Incidents Today",
+    value: "17",
+    change: 12.5,
+    trend: "up",
+    icon: "alert-triangle",
+    accent: "from-rose-500/20 to-red-500/10",
+  },
+];
+
+export const trafficTrend: TrafficTrendPoint[] = [
+  { time: "00:00", current: 18, predicted: 20, vehicles: 1200 },
+  { time: "03:00", current: 12, predicted: 14, vehicles: 800 },
+  { time: "06:00", current: 45, predicted: 48, vehicles: 4200 },
+  { time: "09:00", current: 88, predicted: 85, vehicles: 9800 },
+  { time: "12:00", current: 62, predicted: 65, vehicles: 6400 },
+  { time: "15:00", current: 71, predicted: 74, vehicles: 7100 },
+  { time: "18:00", current: 94, predicted: 91, vehicles: 10400 },
+  { time: "21:00", current: 55, predicted: 58, vehicles: 5200 },
+];
+
+export const vehicleCounts: VehicleCountPoint[] = [
+  { hour: "06AM", cars: 2400, trucks: 400, bikes: 1400, buses: 200 },
+  { hour: "08AM", cars: 5200, trucks: 720, bikes: 3100, buses: 480 },
+  { hour: "10AM", cars: 3800, trucks: 560, bikes: 2200, buses: 320 },
+  { hour: "12PM", cars: 3200, trucks: 610, bikes: 1900, buses: 280 },
+  { hour: "02PM", cars: 3600, trucks: 680, bikes: 2000, buses: 300 },
+  { hour: "04PM", cars: 4400, trucks: 520, bikes: 2600, buses: 360 },
+  { hour: "06PM", cars: 6100, trucks: 480, bikes: 3600, buses: 520 },
+  { hour: "08PM", cars: 3900, trucks: 340, bikes: 2100, buses: 300 },
+];
+
+const zones = ["North", "East", "South", "West", "Central"];
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export const heatCells: HeatCell[] = zones.flatMap((zone) =>
+  days.map((day) => ({
+    zone,
+    day,
+    value: Math.round(20 + Math.random() * 80),
+  })),
+);
+
+const sources = [
+  "MG Road",
+  "Koramangala",
+  "Whitefield",
+  "Indiranagar",
+  "Electronic City",
+  "Hebbal",
+  "Jayanagar",
+  "HSR Layout",
+];
+const destinations = [
+  "Airport",
+  "Silk Board",
+  "Marathahalli",
+  "Majestic",
+  "BTM Layout",
+  "Yeshwanthpur",
+  "KR Puram",
+  "Banashankari",
+];
+const levels: Prediction["congestion"][] = ["low", "moderate", "heavy", "severe"];
+
+export const predictions: Prediction[] = Array.from({ length: 48 }).map((_, i) => {
+  const source = sources[i % sources.length];
+  const destination = destinations[(i * 3) % destinations.length];
+  const congestion = levels[(i * 2 + 1) % levels.length];
+  const date = new Date(Date.now() - i * 3600_000 * 5);
+  return {
+    id: `pred-${(1000 + i).toString()}`,
+    route: `${source} → ${destination}`,
+    source,
+    destination,
+    congestion,
+    confidence: Math.round(78 + Math.random() * 21),
+    travelTime: Math.round(15 + Math.random() * 55),
+    distance: Math.round((5 + Math.random() * 25) * 10) / 10,
+    timestamp: date.toISOString(),
+    vehicleCount: Math.round(800 + Math.random() * 9000),
+    status: i % 11 === 0 ? "processing" : i % 17 === 0 ? "failed" : "completed",
+  };
+});
+
+export const alerts: Alert[] = [
+  {
+    id: "alt-001",
+    type: "accident",
+    priority: "critical",
+    title: "Multi-vehicle collision",
+    description: "Three-vehicle collision blocking two lanes near Silk Board flyover.",
+    location: "Silk Board Junction",
+    coordinates: [12.9177, 77.6238],
+    timestamp: new Date(Date.now() - 12 * 60_000).toISOString(),
+    resolved: false,
+  },
+  {
+    id: "alt-002",
+    type: "weather",
+    priority: "high",
+    title: "Heavy rainfall warning",
+    description: "Intense rainfall reducing visibility across the eastern corridor.",
+    location: "Whitefield Corridor",
+    coordinates: [12.9698, 77.7499],
+    timestamp: new Date(Date.now() - 42 * 60_000).toISOString(),
+    resolved: false,
+  },
+  {
+    id: "alt-003",
+    type: "construction",
+    priority: "medium",
+    title: "Metro construction diversion",
+    description: "Lane restrictions due to metro pillar construction until 6 PM.",
+    location: "Outer Ring Road",
+    coordinates: [12.9352, 77.6245],
+    timestamp: new Date(Date.now() - 90 * 60_000).toISOString(),
+    resolved: false,
+  },
+  {
+    id: "alt-004",
+    type: "emergency",
+    priority: "critical",
+    title: "Ambulance green corridor",
+    description: "Emergency corridor active — signals prioritised toward Manipal Hospital.",
+    location: "Old Airport Road",
+    coordinates: [12.9606, 77.6486],
+    timestamp: new Date(Date.now() - 5 * 60_000).toISOString(),
+    resolved: false,
+  },
+  {
+    id: "alt-005",
+    type: "roadblock",
+    priority: "high",
+    title: "Political rally road closure",
+    description: "Road fully closed for public gathering, expect major diversions.",
+    location: "MG Road",
+    coordinates: [12.9757, 77.6068],
+    timestamp: new Date(Date.now() - 150 * 60_000).toISOString(),
+    resolved: false,
+  },
+  {
+    id: "alt-006",
+    type: "construction",
+    priority: "low",
+    title: "Pothole repair works",
+    description: "Minor lane narrowing for resurfacing near Hebbal flyover.",
+    location: "Hebbal Flyover",
+    coordinates: [13.0358, 77.597],
+    timestamp: new Date(Date.now() - 210 * 60_000).toISOString(),
+    resolved: true,
+  },
+  {
+    id: "alt-007",
+    type: "weather",
+    priority: "medium",
+    title: "Dense fog advisory",
+    description: "Early-morning fog reported, drive with caution on elevated roads.",
+    location: "Electronic City Elevated",
+    coordinates: [12.8452, 77.6602],
+    timestamp: new Date(Date.now() - 300 * 60_000).toISOString(),
+    resolved: true,
+  },
+  {
+    id: "alt-008",
+    type: "accident",
+    priority: "high",
+    title: "Two-wheeler skid",
+    description: "Minor accident cleared, residual slowdown on the left lane.",
+    location: "Marathahalli Bridge",
+    coordinates: [12.9569, 77.7011],
+    timestamp: new Date(Date.now() - 360 * 60_000).toISOString(),
+    resolved: true,
+  },
+];
+
+export const cameras: Camera[] = Array.from({ length: 12 }).map((_, i) => {
+  const density = levels[(i + 1) % levels.length];
+  const names = [
+    "MG Road Signal",
+    "Silk Board Junction",
+    "Hebbal Flyover",
+    "Whitefield Main",
+    "Electronic City Toll",
+    "Marathahalli Bridge",
+    "KR Puram Hanging",
+    "Indiranagar 100ft",
+    "Koramangala Sony",
+    "Jayanagar 4th Block",
+    "Majestic Bus Stand",
+    "Airport Trumpet",
+  ];
+  const detections = [
+    "Normal flow detected",
+    "Congestion forming",
+    "Stop-and-go traffic",
+    "Free flow",
+    "Incident detected",
+  ];
+  return {
+    id: `cam-${(200 + i).toString()}`,
+    name: names[i],
+    location: names[i],
+    coordinates: [
+      CITY_CENTER[0] + (Math.random() - 0.5) * 0.16,
+      CITY_CENTER[1] + (Math.random() - 0.5) * 0.16,
+    ],
+    status: i % 7 === 0 ? "maintenance" : i % 5 === 0 ? "offline" : "online",
+    density,
+    vehicleCount: Math.round(50 + Math.random() * 450),
+    detection: detections[i % detections.length],
+    thumbnail: `https://picsum.photos/seed/traffic${i}/640/360`,
+    fps: [24, 25, 30, 60][i % 4],
+  };
+});
+
+export const roads: Road[] = [
+  {
+    id: "road-01",
+    name: "Outer Ring Road",
+    zone: "East",
+    lanes: 8,
+    length: 62,
+    congestion: "severe",
+    avgSpeed: 18,
+    capacity: 92,
+    status: "open",
+  },
+  {
+    id: "road-02",
+    name: "Hosur Road",
+    zone: "South",
+    lanes: 6,
+    length: 38,
+    congestion: "heavy",
+    avgSpeed: 26,
+    capacity: 78,
+    status: "restricted",
+  },
+  {
+    id: "road-03",
+    name: "Old Airport Road",
+    zone: "Central",
+    lanes: 4,
+    length: 14,
+    congestion: "moderate",
+    avgSpeed: 34,
+    capacity: 61,
+    status: "open",
+  },
+  {
+    id: "road-04",
+    name: "Bellary Road",
+    zone: "North",
+    lanes: 6,
+    length: 27,
+    congestion: "low",
+    avgSpeed: 52,
+    capacity: 38,
+    status: "open",
+  },
+  {
+    id: "road-05",
+    name: "Bannerghatta Road",
+    zone: "South",
+    lanes: 4,
+    length: 22,
+    congestion: "heavy",
+    avgSpeed: 24,
+    capacity: 81,
+    status: "open",
+  },
+  {
+    id: "road-06",
+    name: "Sarjapur Road",
+    zone: "East",
+    lanes: 4,
+    length: 19,
+    congestion: "severe",
+    avgSpeed: 15,
+    capacity: 95,
+    status: "restricted",
+  },
+];
+
+export const mapMarkers: MapMarker[] = [
+  {
+    id: "mk-01",
+    type: "congestion",
+    position: [12.9177, 77.6238],
+    title: "Silk Board Gridlock",
+    description: "Severe congestion — average wait time 14 min.",
+    level: "severe",
+    extra: { "Avg Speed": "12 km/h", Vehicles: 4200 },
+  },
+  {
+    id: "mk-02",
+    type: "accident",
+    position: [12.9569, 77.7011],
+    title: "Accident Reported",
+    description: "Two-wheeler skid, one lane blocked.",
+    extra: { Severity: "Moderate", Reported: "18 min ago" },
+  },
+  {
+    id: "mk-03",
+    type: "camera",
+    position: [12.9757, 77.6068],
+    title: "MG Road Camera",
+    description: "Live feed online at 30 FPS.",
+    extra: { Status: "Online", Detections: 128 },
+  },
+  {
+    id: "mk-04",
+    type: "construction",
+    position: [12.9352, 77.6245],
+    title: "Metro Works",
+    description: "Lane restriction until 6 PM.",
+    extra: { Lanes: "2 of 4 open" },
+  },
+  {
+    id: "mk-05",
+    type: "emergency",
+    position: [12.9606, 77.6486],
+    title: "Green Corridor Active",
+    description: "Ambulance route prioritised.",
+    extra: { ETA: "6 min", Hospital: "Manipal" },
+  },
+  {
+    id: "mk-06",
+    type: "traffic",
+    position: [13.0358, 77.597],
+    title: "Hebbal Flyover",
+    description: "Moderate traffic, steady flow.",
+    level: "moderate",
+    extra: { "Avg Speed": "34 km/h" },
+  },
+  {
+    id: "mk-07",
+    type: "congestion",
+    position: [12.9698, 77.7499],
+    title: "Whitefield Corridor",
+    description: "Heavy congestion during peak hours.",
+    level: "heavy",
+    extra: { "Avg Speed": "22 km/h" },
+  },
+  {
+    id: "mk-08",
+    type: "camera",
+    position: [12.8452, 77.6602],
+    title: "E-City Toll Camera",
+    description: "ANPR active, monitoring toll lanes.",
+    extra: { Status: "Online", FPS: 60 },
+  },
+];
+
+export const roadRoutes: RoadRoute[] = [
+  {
+    id: "rt-low",
+    name: "Bellary Road Express",
+    level: "low",
+    speed: 52,
+    delay: 2,
+    path: [
+      [13.0358, 77.597],
+      [13.02, 77.5905],
+      [13.0, 77.585],
+      [12.985, 77.59],
+    ],
+  },
+  {
+    id: "rt-mod",
+    name: "Old Airport Road",
+    level: "moderate",
+    speed: 34,
+    delay: 8,
+    path: [
+      [12.9606, 77.6486],
+      [12.9606, 77.64],
+      [12.9606, 77.63],
+      [12.9757, 77.6068],
+    ],
+  },
+  {
+    id: "rt-heavy",
+    name: "Sarjapur Stretch",
+    level: "heavy",
+    speed: 24,
+    delay: 18,
+    path: [
+      [12.9081, 77.6476],
+      [12.92, 77.66],
+      [12.935, 77.68],
+      [12.9569, 77.7011],
+    ],
+  },
+  {
+    id: "rt-severe",
+    name: "ORR Silk Board",
+    level: "severe",
+    speed: 14,
+    delay: 32,
+    path: [
+      [12.9177, 77.6238],
+      [12.925, 77.63],
+      [12.935, 77.6245],
+      [12.9352, 77.62],
+    ],
+  },
+];
+
+export const analytics: AnalyticsSummary = {
+  dailyTraffic: [
+    { day: "Mon", volume: 82000 },
+    { day: "Tue", volume: 79500 },
+    { day: "Wed", volume: 86300 },
+    { day: "Thu", volume: 88100 },
+    { day: "Fri", volume: 94800 },
+    { day: "Sat", volume: 71200 },
+    { day: "Sun", volume: 54300 },
+  ],
+  weeklyTraffic: [
+    { week: "W1", volume: 512000 },
+    { week: "W2", volume: 538000 },
+    { week: "W3", volume: 561000 },
+    { week: "W4", volume: 549000 },
+  ],
+  monthlyTraffic: [
+    { month: "Jan", volume: 2.1 },
+    { month: "Feb", volume: 2.0 },
+    { month: "Mar", volume: 2.35 },
+    { month: "Apr", volume: 2.28 },
+    { month: "May", volume: 2.5 },
+    { month: "Jun", volume: 2.62 },
+    { month: "Jul", volume: 2.71 },
+  ],
+  peakHours: [
+    { hour: "6", intensity: 30 },
+    { hour: "8", intensity: 88 },
+    { hour: "10", intensity: 55 },
+    { hour: "12", intensity: 60 },
+    { hour: "14", intensity: 52 },
+    { hour: "16", intensity: 70 },
+    { hour: "18", intensity: 96 },
+    { hour: "20", intensity: 64 },
+    { hour: "22", intensity: 38 },
+  ],
+  averageSpeed: [
+    { zone: "North", speed: 46 },
+    { zone: "East", speed: 22 },
+    { zone: "South", speed: 28 },
+    { zone: "West", speed: 39 },
+    { zone: "Central", speed: 31 },
+  ],
+  vehicleDistribution: [
+    { name: "Cars", value: 52, color: "#38bdf8" },
+    { name: "Two-Wheelers", value: 28, color: "#a78bfa" },
+    { name: "Trucks", value: 9, color: "#fbbf24" },
+    { name: "Buses", value: 7, color: "#34d399" },
+    { name: "Others", value: 4, color: "#f87171" },
+  ],
+  predictionAccuracy: [
+    { date: "Mon", accuracy: 91 },
+    { date: "Tue", accuracy: 93 },
+    { date: "Wed", accuracy: 92 },
+    { date: "Thu", accuracy: 95 },
+    { date: "Fri", accuracy: 94 },
+    { date: "Sat", accuracy: 96 },
+    { date: "Sun", accuracy: 95 },
+  ],
+  congestionFrequency: [
+    { level: "Low", count: 128, color: "#34d399" },
+    { level: "Moderate", count: 214, color: "#fbbf24" },
+    { level: "Heavy", count: 156, color: "#fb923c" },
+    { level: "Severe", count: 92, color: "#f87171" },
+  ],
+};
+
+export const managedUsers: User[] = [
+  currentUser,
+  {
+    id: "usr-002",
+    name: "Priya Nair",
+    email: "priya.nair@trafficai.io",
+    role: "operator",
+    avatar: "https://i.pravatar.cc/150?img=45",
+    createdAt: "2024-05-20T09:00:00Z",
+    lastActive: "2026-07-05T06:10:00Z",
+    status: "active",
+  },
+  {
+    id: "usr-003",
+    name: "Rohan Mehta",
+    email: "rohan.mehta@trafficai.io",
+    role: "operator",
+    avatar: "https://i.pravatar.cc/150?img=33",
+    createdAt: "2024-08-02T09:00:00Z",
+    lastActive: "2026-07-04T21:30:00Z",
+    status: "active",
+  },
+  {
+    id: "usr-004",
+    name: "Sara Khan",
+    email: "sara.khan@trafficai.io",
+    role: "viewer",
+    avatar: "https://i.pravatar.cc/150?img=48",
+    createdAt: "2025-01-15T09:00:00Z",
+    lastActive: "2026-07-03T14:05:00Z",
+    status: "inactive",
+  },
+  {
+    id: "usr-005",
+    name: "Vikram Iyer",
+    email: "vikram.iyer@trafficai.io",
+    role: "viewer",
+    avatar: "https://i.pravatar.cc/150?img=15",
+    createdAt: "2025-03-11T09:00:00Z",
+    lastActive: "2026-06-28T11:45:00Z",
+    status: "suspended",
+  },
+];
+
+export const activities: Activity[] = [
+  {
+    id: "act-1",
+    action: "Ran congestion prediction",
+    detail: "MG Road → Airport · Heavy congestion, 94% confidence",
+    timestamp: new Date(Date.now() - 8 * 60_000).toISOString(),
+    icon: "brain",
+  },
+  {
+    id: "act-2",
+    action: "Acknowledged alert",
+    detail: "Multi-vehicle collision at Silk Board Junction",
+    timestamp: new Date(Date.now() - 40 * 60_000).toISOString(),
+    icon: "alert-triangle",
+  },
+  {
+    id: "act-3",
+    action: "Updated camera settings",
+    detail: "Hebbal Flyover camera set to 60 FPS",
+    timestamp: new Date(Date.now() - 3 * 3600_000).toISOString(),
+    icon: "cctv",
+  },
+  {
+    id: "act-4",
+    action: "Exported report",
+    detail: "Weekly analytics exported as PDF",
+    timestamp: new Date(Date.now() - 26 * 3600_000).toISOString(),
+    icon: "file-down",
+  },
+  {
+    id: "act-5",
+    action: "Logged in",
+    detail: "New session from Bengaluru, India",
+    timestamp: new Date(Date.now() - 30 * 3600_000).toISOString(),
+    icon: "log-in",
+  },
+];
+
+export const weatherOptions = [
+  "Clear",
+  "Cloudy",
+  "Light Rain",
+  "Heavy Rain",
+  "Fog",
+  "Storm",
+];
+export const eventOptions = [
+  "None",
+  "Festival",
+  "Sports Match",
+  "Concert",
+  "Public Holiday",
+  "Political Rally",
+];
+export const vehicleTypeOptions = [
+  "Car",
+  "Two-Wheeler",
+  "Bus",
+  "Truck",
+  "Emergency",
+];
+export const locationOptions = [...new Set([...sources, ...destinations])];
