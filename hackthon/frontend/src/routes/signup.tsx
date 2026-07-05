@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { setState, uid, useStore, addLog, type Role } from "@/lib/store";
-import { apiSignup } from "@/lib/api";
+import { apiSignup, setAuthToken } from "@/lib/api";
 import { toast } from "sonner";
 import { AuthShell, Field, RoleSelect } from "./login";
 
@@ -45,12 +45,15 @@ function SignupPage() {
 
     setSubmitting(true);
     try {
-      await apiSignup({
+      const result = await apiSignup({
         username: form.name,
         email: form.email.trim(),
         password: form.password,
         role,
       });
+      if (result.token) {
+        setAuthToken(result.token);
+      }
       const newUser = {
         id: uid(),
         name: form.name,

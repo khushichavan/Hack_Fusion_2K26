@@ -118,7 +118,7 @@ const seed = (): AppState => ({
       email: "admin@city.gov",
       phone: "+1 555 0001",
       location: "City HQ",
-      password: "admin123",
+      password: "",
       role: "admin",
     },
     {
@@ -127,7 +127,7 @@ const seed = (): AppState => ({
       email: "user@city.gov",
       phone: "+1 555 0100",
       location: "Sector 12",
-      password: "user123",
+      password: "",
       role: "citizen",
     },
   ],

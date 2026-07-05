@@ -31,8 +31,20 @@ wheels/
 *~
 .DS_Store
 
-# Data files (optional - comment out to track data)
-# data/users.json
-# data/areas.json
-# data/allocations.json
-# data/logs.json
+# Data files - contain user credentials and sensitive state
+data/users.json
+data/frontend_state.json
+data/smart_city_db.json
+data/areas.json
+data/allocations.json
+data/logs.json
+
+# Server logs
+*.log
+backend-server.err.log
+backend-server.out.log
+
+# Environment files
+.env
+.env.*
+!.env.example

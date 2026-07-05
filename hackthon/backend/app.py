@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, status
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import Any, Optional
@@ -13,6 +13,8 @@ import hmac
 import json
 import os
 import secrets
+import time
+from collections import defaultdict
 
 try:
     from pymongo import MongoClient
@@ -22,7 +24,15 @@ except Exception:
 DATA_DIR = Path(__file__).parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
 DB_FILE = DATA_DIR / "smart_city_db.json"
-JWT_SECRET = os.getenv("JWT_SECRET", "aquaresolve-ai-demo-secret")
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET:
+    JWT_SECRET = secrets.token_hex(32)
+    import warnings
+    warnings.warn(
+        "JWT_SECRET not set in environment. Using a random secret — tokens will "
+        "not persist across server restarts. Set JWT_SECRET env var in production.",
+        stacklevel=1,
+    )
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 DB_NAME = os.getenv("MONGO_DB", "aquaresolve_ai")
 
@@ -37,6 +47,30 @@ COLLECTIONS = [
     "audit_logs",
     "notifications",
 ]
+
+
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000",
+).split(",")
+
+# --- Rate Limiting ---
+_rate_limit_store: dict[str, list[float]] = defaultdict(list)
+RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_MAX_REQUESTS = 10  # per window for auth endpoints
+
+
+def _check_rate_limit(client_ip: str, max_requests: int = RATE_LIMIT_MAX_REQUESTS) -> None:
+    now = time.time()
+    window_start = now - RATE_LIMIT_WINDOW
+    attempts = _rate_limit_store[client_ip]
+    _rate_limit_store[client_ip] = [t for t in attempts if t > window_start]
+    if len(_rate_limit_store[client_ip]) >= max_requests:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many requests. Please try again later.",
+        )
+    _rate_limit_store[client_ip].append(now)
 
 
 class SignupRequest(BaseModel):
@@ -260,14 +294,22 @@ def zone(
 
 
 repo = MongoJsonRepository()
-app = FastAPI(title="AquaResolve AI - Fair Urban Water Distribution System", version="2.0.0")
+
+_is_production = os.getenv("ENV", "development") == "production"
+app = FastAPI(
+    title="AquaResolve AI - Fair Urban Water Distribution System",
+    version="2.0.0",
+    docs_url=None if _is_production else "/docs",
+    redoc_url=None if _is_production else "/redoc",
+    openapi_url=None if _is_production else "/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1):\d+$",
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 
@@ -281,6 +323,58 @@ def create_token(user: dict[str, Any]) -> str:
     signature = hmac.new(JWT_SECRET.encode(), body.encode(), hashlib.sha256).digest()
     sig = base64.urlsafe_b64encode(signature).decode().rstrip("=")
     return f"{body}.{sig}"
+
+
+def verify_token(token: str) -> dict[str, Any]:
+    """Verify and decode a JWT token. Returns the payload or raises HTTPException."""
+    try:
+        parts = token.split(".")
+        if len(parts) != 2:
+            raise ValueError("Malformed token")
+        body_b64, sig_b64 = parts
+        expected_sig = hmac.new(JWT_SECRET.encode(), body_b64.encode(), hashlib.sha256).digest()
+        actual_sig = base64.urlsafe_b64decode(sig_b64 + "==" * (4 - len(sig_b64) % 4))
+        if not hmac.compare_digest(expected_sig, actual_sig):
+            raise ValueError("Invalid signature")
+        padding = "==" * (4 - len(body_b64) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(body_b64 + padding))
+        if payload.get("exp", 0) < datetime.now(timezone.utc).timestamp():
+            raise ValueError("Token expired")
+        return payload
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid or expired token: {exc}",
+        ) from exc
+
+
+def get_current_user(request: Request) -> dict[str, Any]:
+    """Extract and verify user from Authorization header."""
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing or invalid Authorization header. Use 'Bearer <token>'.",
+        )
+    token = auth_header[7:]
+    payload = verify_token(token)
+    user = find_user(payload["sub"])
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+    return user
+
+
+def require_role(*roles: str):
+    """Dependency that checks the current user has one of the allowed roles."""
+    def checker(request: Request) -> dict[str, Any]:
+        user = get_current_user(request)
+        if user["role"] not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied. Required role: {', '.join(roles)}",
+            )
+        return user
+    return checker
 
 
 def find_user(email: str) -> Optional[dict[str, Any]]:
@@ -412,18 +506,25 @@ async def broadcast(event: str, payload: dict[str, Any]):
 
 
 @app.post("/auth/signup")
-def signup_v2(request: SignupRequest):
-    return signup(request)
+def signup_v2(request: SignupRequest, req: Request):
+    return signup(request, req)
 
 
 @app.post("/signup")
-def signup(request: SignupRequest):
+def signup(request: SignupRequest, req: Request):
+    _check_rate_limit(req.client.host if req.client else "unknown")
     if request.role == "user":
         request.role = "citizen"
-    if request.role not in {"admin", "authority", "citizen"}:
-        raise HTTPException(status_code=400, detail="Role must be admin, authority, or citizen")
+    # Prevent privilege escalation: new signups can only be 'citizen'
+    if request.role not in {"citizen"}:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Self-registration is only allowed for citizen role. Contact admin for elevated access.",
+        )
     if find_user(str(request.email)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists")
+    if len(request.password) < 8:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password must be at least 8 characters")
     user = demo_user(request.username, str(request.email), request.password, request.role)
     repo.insert("users", user)
     audit(request.username, "Created account", {"role": request.role})
@@ -431,12 +532,13 @@ def signup(request: SignupRequest):
 
 
 @app.post("/auth/login")
-def login_v2(request: LoginRequest):
-    return login(request)
+def login_v2(request: LoginRequest, req: Request):
+    return login(request, req)
 
 
 @app.post("/login")
-def login(request: LoginRequest):
+def login(request: LoginRequest, req: Request):
+    _check_rate_limit(req.client.host if req.client else "unknown")
     user = find_user(str(request.email))
     if not user or not verify_password(user["password_hash"], request.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -465,7 +567,7 @@ def get_water_zones():
 
 
 @app.post("/ai/fairness/allocate")
-async def allocate(request: AllocationRequest):
+async def allocate(request: AllocationRequest, _user: dict = Depends(require_role("admin", "authority"))):
     result = run_fairness_engine(request.total_supply, request.drought_severity, request.emergency_zone_id, request.emergency_type)
     await broadcast("allocation.updated", result)
     return {"message": "AI fairness allocation completed", "result": result}
@@ -497,7 +599,7 @@ async def create_complaint(request: ComplaintRequest):
 
 
 @app.post("/water-requests/action")
-async def update_request(request: WaterRequestAction):
+async def update_request(request: WaterRequestAction, user: dict = Depends(require_role("admin", "authority"))):
     docs = repo.list("water_requests")
     for item in docs:
         if item["id"] == request.request_id:
@@ -505,14 +607,14 @@ async def update_request(request: WaterRequestAction):
             item["decision_reason"] = request.reason
             item["updated_at"] = utc_now()
             repo.replace("water_requests", docs)
-            audit("Authority", f"{request.action.title()} water request", {"request_id": request.request_id})
+            audit(user["username"], f"{request.action.title()} water request", {"request_id": request.request_id})
             await broadcast("request.updated", item)
             return {"message": "Request updated", "request": item}
     raise HTTPException(status_code=404, detail="Request not found")
 
 
 @app.post("/emergency/trigger")
-async def trigger_emergency(request: EmergencyRequest):
+async def trigger_emergency(request: EmergencyRequest, user: dict = Depends(require_role("admin", "authority"))):
     event = {
         "id": uid("emg"),
         "event_type": request.event_type,
@@ -524,7 +626,7 @@ async def trigger_emergency(request: EmergencyRequest):
     }
     repo.insert("emergency_events", event)
     result = run_fairness_engine(1850, 0.55 if request.event_type == "drought" else 0.35, request.zone_id, request.event_type)
-    audit("AquaResolve AI", "Triggered emergency redistribution", event)
+    audit(user["username"], "Triggered emergency redistribution", event)
     await broadcast("emergency.redistributed", {"event": event, "allocation": result})
     return {"message": "Emergency redistribution completed", "event": event, "allocation": result}
 
@@ -535,7 +637,8 @@ def tanker_tracking():
 
 
 @app.get("/audit-logs")
-def audit_logs(limit: int = 100):
+def audit_logs(limit: int = 100, _user: dict = Depends(require_role("admin", "authority"))):
+    limit = min(limit, 500)  # Cap to prevent excessive data retrieval
     logs = repo.list("audit_logs")
     return {"total": len(logs), "logs": logs[-limit:]}
 
@@ -549,14 +652,29 @@ def get_frontend_state():
 
 
 @app.put("/frontend-state")
-def save_frontend_state(request: FrontendStateRequest):
+def save_frontend_state(request: FrontendStateRequest, _user: dict = Depends(get_current_user)):
+    # Sanitize: strip password fields from user records before persisting
+    sanitized_state = request.state.copy()
+    if "users" in sanitized_state and isinstance(sanitized_state["users"], list):
+        sanitized_state["users"] = [
+            {k: v for k, v in u.items() if k != "password"} if isinstance(u, dict) else u
+            for u in sanitized_state["users"]
+        ]
     with open(frontend_state_file, "w", encoding="utf-8") as handle:
-        json.dump(request.state, handle, indent=2)
+        json.dump(sanitized_state, handle, indent=2)
     return {"message": "Frontend state saved successfully"}
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    # Verify token from query param for WebSocket auth
+    token = websocket.query_params.get("token")
+    if token:
+        try:
+            verify_token(token)
+        except HTTPException:
+            await websocket.close(code=4001, reason="Invalid token")
+            return
     await websocket.accept()
     connections.add(websocket)
     try:
@@ -577,9 +695,6 @@ def root():
     return {
         "name": "AquaResolve AI - Fair Urban Water Distribution System",
         "version": "2.0.0",
-        "docs": "/docs",
-        "websocket": "/ws",
-        "collections": COLLECTIONS,
     }
 
 
@@ -597,4 +712,5 @@ async def startup_event():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8001, reload=True)
+    is_dev = os.getenv("ENV", "development") == "development"
+    uvicorn.run(app, host="127.0.0.1", port=8001, reload=is_dev)
