@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { setState, useStore, getSession } from "@/lib/store";
+import { formatDateTime } from "@/lib/format";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/notifications")({
@@ -128,7 +129,7 @@ function NotificationsPage() {
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{notification.body}</p>
                   <div className="mt-2 text-xs text-muted-foreground">
-                    {new Date(notification.createdAt).toLocaleString()}
+                    {formatDateTime(notification.createdAt)}
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-2">

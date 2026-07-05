@@ -25,6 +25,7 @@ import {
 } from "@/lib/store";
 import { toast } from "sonner";
 import { apiCreateComplaint } from "@/lib/api";
+import { PrioritySelect } from "@/components/form-selects";
 
 export const Route = createFileRoute("/dashboard/demand")({
   component: DemandPage,
@@ -164,19 +165,10 @@ function DemandPage() {
           </div>
           <div className="space-y-2">
             <Label>Priority</Label>
-            <Select
+            <PrioritySelect
               value={form.priority}
-              onValueChange={(value) => setForm({ ...form, priority: value as Priority })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-              </SelectContent>
-            </Select>
+              onChange={(priority) => setForm({ ...form, priority })}
+            />
           </div>
         </div>
 

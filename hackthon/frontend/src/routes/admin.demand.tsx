@@ -11,14 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Plus, Trash2, Pencil, Check, X } from "lucide-react";
+import { CategorySelect, PrioritySelect } from "@/components/form-selects";
 import {
   setState,
   useStore,
@@ -94,19 +88,10 @@ function DemandMgmt() {
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Category</label>
-          <Select
+          <CategorySelect
             value={newRow.category}
-            onValueChange={(v) => setNewRow({ ...newRow, category: v as Category })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Hospital">Hospital</SelectItem>
-              <SelectItem value="Residential">Residential</SelectItem>
-              <SelectItem value="Industry">Industry</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(category) => setNewRow({ ...newRow, category })}
+          />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Demand (ML)</label>
@@ -118,19 +103,10 @@ function DemandMgmt() {
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Priority</label>
-          <Select
+          <PrioritySelect
             value={newRow.priority}
-            onValueChange={(v) => setNewRow({ ...newRow, priority: v as Priority })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(priority) => setNewRow({ ...newRow, priority })}
+          />
         </div>
         <div className="md:col-span-5">
           <Button onClick={add}>
@@ -163,19 +139,10 @@ function DemandMgmt() {
               </TableCell>
               <TableCell>
                 {editing === a.id && draft ? (
-                  <Select
+                  <CategorySelect
                     value={draft.category}
-                    onValueChange={(v) => setDraft({ ...draft, category: v as Category })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Hospital">Hospital</SelectItem>
-                      <SelectItem value="Residential">Residential</SelectItem>
-                      <SelectItem value="Industry">Industry</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    onChange={(category) => setDraft({ ...draft, category })}
+                  />
                 ) : (
                   a.category
                 )}
@@ -193,19 +160,10 @@ function DemandMgmt() {
               </TableCell>
               <TableCell className="capitalize">
                 {editing === a.id && draft ? (
-                  <Select
+                  <PrioritySelect
                     value={draft.priority}
-                    onValueChange={(v) => setDraft({ ...draft, priority: v as Priority })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="low">Low</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    onChange={(priority) => setDraft({ ...draft, priority })}
+                  />
                 ) : (
                   a.priority
                 )}

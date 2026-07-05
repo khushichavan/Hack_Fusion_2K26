@@ -10,30 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getSession, sweepExpired, useStore, type RequestStatus } from "@/lib/store";
+import { getSession, sweepExpired, useStore } from "@/lib/store";
+import { RequestStatusBadge } from "@/components/status-badges";
+import { formatDateTime, formatRemaining } from "@/lib/format";
 
 export const Route = createFileRoute("/dashboard/status")({
   component: StatusPage,
 });
-
-function statusBadge(status: RequestStatus | undefined) {
-  const map: Record<RequestStatus, string> = {
-    Pending: "bg-warning text-warning-foreground hover:bg-warning",
-    Active: "bg-primary text-primary-foreground hover:bg-primary",
-    Approved: "bg-success text-success-foreground hover:bg-success",
-    Rejected: "bg-destructive text-destructive-foreground hover:bg-destructive",
-    Completed: "bg-success text-success-foreground hover:bg-success",
-    Expired: "bg-muted text-muted-foreground hover:bg-muted",
-  };
-  if (!status || !map[status]) return <Badge variant="secondary">Unknown</Badge>;
-  return <Badge className={map[status]}>{status}</Badge>;
-}
-
-function fmt(ms: number) {
-  if (!Number.isFinite(ms) || ms <= 0) return "-";
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}m ${s % 60}s`;
-}
 
 function locationTitle(request: {
   location?: { area?: string };
@@ -53,10 +36,6 @@ function locationSubtitle(request: {
   if (request.coordinates)
     return `${request.coordinates.lat.toFixed(4)}, ${request.coordinates.lng.toFixed(4)}`;
   return "No saved coordinates";
-}
-
-function submittedAt(value: number | undefined) {
-  return value ? new Date(value).toLocaleString() : "Not recorded";
 }
 
 function StatusPage() {
@@ -123,12 +102,14 @@ function StatusPage() {
                     {request.purpose ?? "Not specified"}
                   </TableCell>
                   <TableCell className="capitalize">{request.priority ?? "medium"}</TableCell>
-                  <TableCell>{statusBadge(request.status)}</TableCell>
+                  <TableCell>
+                    <RequestStatusBadge status={request.status} />
+                  </TableCell>
                   <TableCell className="font-mono text-sm">
-                    {isLive ? fmt(remaining) : "-"}
+                    {isLive ? formatRemaining(remaining, "-") : "-"}
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground">
-                    {submittedAt(request.submittedAt)}
+                    {formatDateTime(request.submittedAt)}
                   </TableCell>
                 </TableRow>
               );

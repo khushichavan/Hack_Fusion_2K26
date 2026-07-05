@@ -13,6 +13,8 @@ import {
   YAxis,
 } from "recharts";
 import { useStore } from "@/lib/store";
+import { StatCard } from "@/components/stat-card";
+import { CHART_ALLOCATED_FILL, CHART_DEMAND_FILL, CHART_GRID_STROKE } from "@/lib/chart";
 
 export const Route = createFileRoute("/dashboard/supply")({
   component: SupplyPage,
@@ -40,9 +42,9 @@ function SupplyPage() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
-        <Stat title="Total Supply" value={`${total} ML`} accent="primary" />
-        <Stat title="Total Demand" value={`${demand} ML`} accent="warning" />
-        <Stat title="Allocated" value={`${allocation} ML`} accent="success" />
+        <StatCard title="Total Supply" value={`${total} ML`} accent="primary" />
+        <StatCard title="Total Demand" value={`${demand} ML`} accent="warning" />
+        <StatCard title="Allocated" value={`${allocation} ML`} accent="success" />
         <Card className="p-6">
           <div className="mb-3 inline-flex rounded-md bg-muted px-2 py-1 text-xs font-medium">
             Status
@@ -62,42 +64,17 @@ function SupplyPage() {
         <div className="h-72 w-full">
           <ResponsiveContainer>
             <BarChart data={areas}>
-              <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 230)" />
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} />
               <XAxis dataKey="name" tick={{ fontSize: 11 }} />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="demand" fill="oklch(0.78 0.15 75)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="allocated" fill="oklch(0.55 0.15 230)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="demand" fill={CHART_DEMAND_FILL} radius={[6, 6, 0, 0]} />
+              <Bar dataKey="allocated" fill={CHART_ALLOCATED_FILL} radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </Card>
     </div>
-  );
-}
-
-function Stat({
-  title,
-  value,
-  accent,
-}: {
-  title: string;
-  value: string;
-  accent: "primary" | "warning" | "success";
-}) {
-  const cls =
-    accent === "primary"
-      ? "bg-primary/10 text-primary"
-      : accent === "warning"
-        ? "bg-warning/15 text-warning-foreground"
-        : "bg-success/15 text-success";
-  return (
-    <Card className="p-6">
-      <div className={`mb-3 inline-flex rounded-md px-2 py-1 text-xs font-medium ${cls}`}>
-        {title}
-      </div>
-      <div className="text-3xl font-bold tracking-tight">{value}</div>
-    </Card>
   );
 }

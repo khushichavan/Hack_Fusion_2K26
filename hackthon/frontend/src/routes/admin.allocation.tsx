@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -23,18 +22,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { StatCard } from "@/components/stat-card";
+import { AreaStatusBadge } from "@/components/status-badges";
+import {
+  CHART_ALLOCATED_FILL,
+  CHART_DEMAND_FILL,
+  CHART_GRID_STROKE,
+  CHART_PALETTE,
+} from "@/lib/chart";
 
 export const Route = createFileRoute("/admin/allocation")({
   component: AllocationDash,
 });
-
-const COLORS = [
-  "oklch(0.55 0.15 230)",
-  "oklch(0.72 0.14 215)",
-  "oklch(0.65 0.15 155)",
-  "oklch(0.78 0.15 75)",
-  "oklch(0.60 0.22 25)",
-];
 
 function AllocationDash() {
   const total = useStore((s) => s.totalSupply);
@@ -51,10 +50,10 @@ function AllocationDash() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
-        <Stat title="Total Supply" value={`${total} ML`} />
-        <Stat title="Total Demand" value={`${totalDemand} ML`} />
-        <Stat title="Pending requests" value={`${pendingRequests.length}`} />
-        <Stat title="Request demand" value={`${totalRequestAmount} ML`} />
+        <StatCard title="Total Supply" value={`${total} ML`} />
+        <StatCard title="Total Demand" value={`${totalDemand} ML`} />
+        <StatCard title="Pending requests" value={`${pendingRequests.length}`} />
+        <StatCard title="Request demand" value={`${totalRequestAmount} ML`} />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6">
@@ -64,7 +63,7 @@ function AllocationDash() {
               <PieChart>
                 <Pie data={pie} dataKey="value" innerRadius={60} outerRadius={100} paddingAngle={3}>
                   {pie.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    <Cell key={i} fill={CHART_PALETTE[i % CHART_PALETTE.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -78,13 +77,13 @@ function AllocationDash() {
           <div className="h-72">
             <ResponsiveContainer>
               <BarChart data={areas}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 230)" />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="demand" fill="oklch(0.78 0.15 75)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="allocated" fill="oklch(0.55 0.15 230)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="demand" fill={CHART_DEMAND_FILL} radius={[6, 6, 0, 0]} />
+                <Bar dataKey="allocated" fill={CHART_ALLOCATED_FILL} radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -129,17 +128,7 @@ function AllocationDash() {
                 <TableCell className="capitalize">{a.priority}</TableCell>
                 <TableCell>{a.allocated} ML</TableCell>
                 <TableCell>
-                  {a.status === "Full" && (
-                    <Badge className="bg-success text-success-foreground hover:bg-success">
-                      Full
-                    </Badge>
-                  )}
-                  {a.status === "Partial" && (
-                    <Badge className="bg-warning text-warning-foreground hover:bg-warning">
-                      Partial
-                    </Badge>
-                  )}
-                  {a.status === "No Supply" && <Badge variant="destructive">No Supply</Badge>}
+                  <AreaStatusBadge status={a.status} />
                 </TableCell>
                 <TableCell className="max-w-xs text-xs text-muted-foreground">
                   {a.justification}
@@ -150,14 +139,5 @@ function AllocationDash() {
         </Table>
       </Card>
     </div>
-  );
-}
-
-function Stat({ title, value }: { title: string; value: string }) {
-  return (
-    <Card className="p-6">
-      <div className="text-xs font-medium text-muted-foreground">{title}</div>
-      <div className="mt-2 text-3xl font-bold">{value}</div>
-    </Card>
   );
 }
