@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useStore, recalcAllocation, addLog } from "@/lib/store";
+import { AreaStatusBadge } from "@/components/status-badges";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/conflict")({
@@ -91,12 +92,7 @@ function ConflictPage() {
                       Priority: {a.priority} · {a.allocated}/{a.demand} ML
                     </div>
                   </div>
-                  {a.status === "Partial" && (
-                    <Badge className="bg-warning text-warning-foreground hover:bg-warning">
-                      Partial
-                    </Badge>
-                  )}
-                  {a.status === "No Supply" && <Badge variant="destructive">No supply</Badge>}
+                  <AreaStatusBadge status={a.status} />
                 </div>
                 <p className="mt-2 text-sm">{a.justification}</p>
               </li>

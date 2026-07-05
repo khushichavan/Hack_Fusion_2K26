@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
+import { formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/logs")({
   component: LogsPage,
@@ -22,7 +23,7 @@ function LogsPage() {
               <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-primary" />
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="font-mono text-sm text-muted-foreground">
-                  {new Date(l.ts).toLocaleString()}
+                  {formatDateTime(l.ts)}
                 </span>
                 <span className="font-medium">{l.actor}</span>
               </div>

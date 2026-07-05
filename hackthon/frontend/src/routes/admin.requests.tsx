@@ -32,28 +32,12 @@ import {
 import { MapPin, Navigation } from "lucide-react";
 import { toast } from "sonner";
 import type { Map as LeafletMap, Marker } from "leaflet";
+import { RequestStatusBadge } from "@/components/status-badges";
+import { formatDateTime, formatRemaining } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/requests")({
   component: UserRequestsPage,
 });
-
-function fmt(ms: number) {
-  if (ms <= 0) return "—";
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}m ${s % 60}s`;
-}
-
-function statusBadge(s: RequestStatus) {
-  const m: Record<RequestStatus, string> = {
-    Pending: "bg-warning text-warning-foreground hover:bg-warning",
-    Active: "bg-primary text-primary-foreground hover:bg-primary",
-    Approved: "bg-success text-success-foreground hover:bg-success",
-    Rejected: "bg-destructive text-destructive-foreground hover:bg-destructive",
-    Completed: "bg-success text-success-foreground hover:bg-success",
-    Expired: "bg-muted text-muted-foreground hover:bg-muted",
-  };
-  return <Badge className={m[s]}>{s}</Badge>;
-}
 
 function requestCenter(request: DemandRequest): [number, number] {
   if (request.coordinates) return [request.coordinates.lat, request.coordinates.lng];
@@ -277,9 +261,11 @@ function UserRequestsPage() {
                     <TableCell>{r.amount} ML</TableCell>
                     <TableCell className="max-w-xs truncate">{r.purpose}</TableCell>
                     <TableCell className="capitalize">{r.priority}</TableCell>
-                    <TableCell>{statusBadge(r.status)}</TableCell>
+                    <TableCell>
+                      <RequestStatusBadge status={r.status} />
+                    </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
-                      {new Date(r.submittedAt).toLocaleString()}
+                      {formatDateTime(r.submittedAt)}
                     </TableCell>
                     <TableCell className="text-right space-y-2">
                       <div className="flex flex-wrap justify-end gap-2">
@@ -313,7 +299,7 @@ function UserRequestsPage() {
                         </Button>
                       </div>
                       <div className="text-right text-[11px] text-muted-foreground">
-                        {live ? fmt(remaining) : "—"}
+                        {live ? formatRemaining(remaining) : "—"}
                       </div>
                     </TableCell>
                   </TableRow>
