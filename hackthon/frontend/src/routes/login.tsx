@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { setSession, setState, useStore, type Role } from "@/lib/store";
 import { addLog, notify } from "@/lib/store";
-import { apiLogin } from "@/lib/api";
+import { apiLogin, setAuthToken } from "@/lib/api";
 import { toast } from "sonner";
 import heroImg from "@/assets/hero-water.jpg";
 
@@ -33,6 +33,9 @@ function LoginPage() {
     setSubmitting(true);
     try {
       const result = await apiLogin({ email: email.trim(), password });
+      if (result.token) {
+        setAuthToken(result.token);
+      }
       if (result.user.role !== role) {
         toast.error("Invalid role for this account");
         return;
@@ -103,10 +106,7 @@ function LoginPage() {
         <Button type="submit" className="w-full" disabled={submitting}>
           {submitting ? "Signing in..." : "Sign in"}
         </Button>
-        <p className="text-center text-xs text-muted-foreground">
-          Demo: <span className="font-mono">user@city.gov / user123</span> |{" "}
-          <span className="font-mono">admin@city.gov / admin123</span>
-        </p>
+        {/* Demo credentials removed for security */}
         <p className="text-center text-sm text-muted-foreground">
           No account?{" "}
           <Link to="/signup" className="font-medium text-primary hover:underline">

@@ -10,13 +10,37 @@ export class ApiError extends Error {
   }
 }
 
+function getAuthToken(): string | null {
+  try {
+    const session = localStorage.getItem("aquaflow_session");
+    if (!session) return null;
+    return localStorage.getItem("aquaflow_token");
+  } catch {
+    return null;
+  }
+}
+
+export function setAuthToken(token: string | null) {
+  if (token) {
+    localStorage.setItem("aquaflow_token", token);
+  } else {
+    localStorage.removeItem("aquaflow_token");
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((options.headers as Record<string, string>) ?? {}),
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers ?? {}),
-    },
+    headers,
   });
   const text = await response.text();
   const data = text ? JSON.parse(text) : null;
